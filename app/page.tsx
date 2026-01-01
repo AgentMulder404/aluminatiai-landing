@@ -1,65 +1,248 @@
-import Image from "next/image";
-
 export default function Home() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <main className="min-h-screen bg-black text-white">
+      {/* HERO */}
+      <section className="px-6 py-32 md:py-40 text-center max-w-6xl mx-auto">
+        <h1 className="text-5xl md:text-7xl font-bold tracking-tight leading-tight">
+          Energy Intelligence for AI Infrastructure
+        </h1>
+        <p className="mt-8 text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
+          GPU-level power monitoring mapped to jobs, models, and teams.
+        </p>
+        <p className="mt-6 text-base md:text-lg text-gray-400 max-w-2xl mx-auto leading-relaxed">
+          AluminatiAI makes AI energy usage transparent, attributable, and optimizable—so you can reduce waste, control costs, and build energy-aware infrastructure without slowing innovation.
+        </p>
+
+        <div className="mt-12">
+          <button className="px-8 py-4 bg-white text-black font-semibold rounded-lg hover:bg-gray-100 transition-colors text-lg">
+            Request Early Access
+          </button>
+        </div>
+      </section>
+
+      {/* MISSION */}
+      <section className="px-6 py-20 bg-neutral-950 border-y border-neutral-800">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-2xl md:text-3xl font-semibold text-center mb-8">
+            Our Mission
+          </h2>
+          <p className="text-gray-300 text-lg md:text-xl leading-relaxed">
+            AluminatiAI's mission is to make AI energy usage transparent, attributable, and optimizable.
+            As AI workloads scale, energy becomes a hidden constraint on cost, performance, and sustainability.
+            We give AI teams precise visibility into GPU-level power consumption—mapped to jobs, models, and teams—so they can reduce waste, control costs, and build energy-aware AI infrastructure without slowing innovation.
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </section>
+
+      {/* PROBLEM */}
+      <section className="px-6 py-24 md:py-32">
+        <div className="max-w-5xl mx-auto">
+          <h2 className="text-3xl md:text-4xl font-semibold mb-16 text-center">
+            The Problem
+          </h2>
+
+          <div className="grid md:grid-cols-2 gap-12 md:gap-16">
+            <div className="space-y-6">
+              <h3 className="text-xl font-semibold text-gray-200">
+                AI Energy Usage Is Opaque
+              </h3>
+              <p className="text-gray-400 leading-relaxed">
+                Most AI teams have no visibility into how much energy their workloads consume.
+                GPUs draw hundreds of watts per card, but this data is rarely collected,
+                let alone attributed to specific jobs or models.
+              </p>
+            </div>
+
+            <div className="space-y-6">
+              <h3 className="text-xl font-semibold text-gray-200">
+                Cloud Bills Don't Tell the Story
+              </h3>
+              <p className="text-gray-400 leading-relaxed">
+                Utilization metrics show when GPUs are busy, but not how much power they consume.
+                Cloud invoices show instance costs, but hide the energy footprint.
+                Without attribution, optimization is guesswork.
+              </p>
+            </div>
+
+            <div className="space-y-6">
+              <h3 className="text-xl font-semibold text-gray-200">
+                Scale Amplifies the Gap
+              </h3>
+              <p className="text-gray-400 leading-relaxed">
+                As teams move from a few GPUs to hundreds or thousands,
+                energy becomes a real constraint—on budgets, on datacenter capacity,
+                and on sustainability commitments.
+              </p>
+            </div>
+
+            <div className="space-y-6">
+              <h3 className="text-xl font-semibold text-gray-200">
+                Compliance Lacks Technical Depth
+              </h3>
+              <p className="text-gray-400 leading-relaxed">
+                Sustainability reporting requires accurate energy data.
+                Generic carbon calculators don't understand AI workloads.
+                You need metrics that map to real infrastructure.
+              </p>
+            </div>
+          </div>
         </div>
-      </main>
-    </div>
+      </section>
+
+      {/* SOLUTION */}
+      <section className="px-6 py-24 md:py-32 bg-neutral-950">
+        <div className="max-w-5xl mx-auto">
+          <h2 className="text-3xl md:text-4xl font-semibold mb-16 text-center">
+            How AluminatiAI Solves This
+          </h2>
+
+          <div className="space-y-12">
+            <div className="border-l-2 border-white pl-8">
+              <h3 className="text-2xl font-semibold mb-4">
+                GPU-Level Power Monitoring
+              </h3>
+              <p className="text-gray-300 text-lg leading-relaxed">
+                We capture real-time power draw, utilization, and thermal data
+                directly from GPUs using lightweight agents that don't disrupt your workloads.
+              </p>
+            </div>
+
+            <div className="border-l-2 border-white pl-8">
+              <h3 className="text-2xl font-semibold mb-4">
+                Job-, Model-, and Team-Level Attribution
+              </h3>
+              <p className="text-gray-300 text-lg leading-relaxed">
+                Energy usage is mapped to the jobs that consumed it—not just the instance or cluster.
+                See which models, experiments, or teams are driving your energy footprint.
+              </p>
+            </div>
+
+            <div className="border-l-2 border-white pl-8">
+              <h3 className="text-2xl font-semibold mb-4">
+                Optimization Insights That Matter
+              </h3>
+              <p className="text-gray-300 text-lg leading-relaxed">
+                Compare training runs. Identify inefficient jobs.
+                Make energy-aware scheduling decisions.
+                Reduce waste without sacrificing performance.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* HOW IT WORKS */}
+      <section className="px-6 py-24 md:py-32">
+        <div className="max-w-5xl mx-auto">
+          <h2 className="text-3xl md:text-4xl font-semibold mb-16 text-center">
+            How It Works
+          </h2>
+
+          <div className="grid md:grid-cols-3 gap-12 text-center">
+            <div>
+              <div className="text-4xl font-bold text-white mb-6">01</div>
+              <h4 className="text-2xl font-semibold mb-4">Collect</h4>
+              <p className="text-gray-400 leading-relaxed">
+                Lightweight agents deployed on your infrastructure capture
+                GPU power consumption, utilization, temperature, and clock speed—without
+                interfering with training or inference workloads.
+              </p>
+            </div>
+
+            <div>
+              <div className="text-4xl font-bold text-white mb-6">02</div>
+              <h4 className="text-2xl font-semibold mb-4">Attribute</h4>
+              <p className="text-gray-400 leading-relaxed">
+                Energy metrics are mapped to specific jobs, models, users, and teams.
+                Not just "this GPU used 300W"—but "this training run consumed 15 kWh
+                over 6 hours."
+              </p>
+            </div>
+
+            <div>
+              <div className="text-4xl font-bold text-white mb-6">03</div>
+              <h4 className="text-2xl font-semibold mb-4">Optimize</h4>
+              <p className="text-gray-400 leading-relaxed">
+                Identify inefficient jobs, compare experiment energy costs,
+                and make data-driven decisions about scheduling, hardware selection,
+                and infrastructure capacity.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* WHY DIFFERENT */}
+      <section className="px-6 py-24 md:py-32 bg-neutral-950 border-y border-neutral-800">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-3xl md:text-4xl font-semibold mb-12">
+            Built Specifically for AI Workloads
+          </h2>
+
+          <div className="space-y-8 text-left max-w-3xl mx-auto">
+            <div className="flex gap-4">
+              <div className="text-white text-xl font-bold">→</div>
+              <div>
+                <p className="text-gray-300 text-lg leading-relaxed">
+                  <span className="font-semibold text-white">Energy-first monitoring.</span> Traditional tools focus on utilization or throughput.
+                  We start with power consumption and work backwards to attribution and optimization.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex gap-4">
+              <div className="text-white text-xl font-bold">→</div>
+              <div>
+                <p className="text-gray-300 text-lg leading-relaxed">
+                  <span className="font-semibold text-white">Designed for ML infrastructure.</span> Not generic compute monitoring adapted for AI.
+                  Built from the ground up to understand training runs, inference workloads, and multi-GPU jobs.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex gap-4">
+              <div className="text-white text-xl font-bold">→</div>
+              <div>
+                <p className="text-gray-300 text-lg leading-relaxed">
+                  <span className="font-semibold text-white">Attribution at every layer.</span> From the GPU to the model to the team.
+                  Energy usage becomes a first-class metric alongside accuracy, latency, and cost.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CLOSING CTA */}
+      <section className="px-6 py-32 md:py-40">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-4xl md:text-5xl font-bold mb-8 leading-tight">
+            The Future of AI Is Energy-Aware
+          </h2>
+          <p className="text-xl text-gray-300 mb-12 max-w-2xl mx-auto leading-relaxed">
+            As AI scales, teams that understand and optimize their energy footprint
+            will build faster, cheaper, and more sustainable infrastructure.
+          </p>
+
+          <div>
+            <button className="px-10 py-5 bg-white text-black font-semibold rounded-lg hover:bg-gray-100 transition-colors text-lg">
+              Get Early Access
+            </button>
+          </div>
+
+          <p className="mt-8 text-gray-500 text-sm">
+            Join ML platform teams and AI infrastructure engineers building the next generation of energy-aware systems.
+          </p>
+        </div>
+      </section>
+
+      {/* FOOTER */}
+      <footer className="px-6 py-12 border-t border-neutral-800">
+        <div className="max-w-6xl mx-auto text-center text-gray-500 text-sm">
+          <p>© {new Date().getFullYear()} AluminatiAI. All rights reserved.</p>
+          <p className="mt-2">AluminatiAI.com</p>
+        </div>
+      </footer>
+    </main>
   );
 }
