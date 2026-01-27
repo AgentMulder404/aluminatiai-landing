@@ -1,4 +1,11 @@
+"use client";
+
+import { useState } from "react";
+import EmailSignupModal from "@/components/EmailSignupModal";
+
 export default function Home() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   return (
     <main className="min-h-screen bg-black text-white">
       {/* HERO */}
@@ -14,7 +21,10 @@ export default function Home() {
         </p>
 
         <div className="mt-12">
-          <button className="px-8 py-4 bg-white text-black font-semibold rounded-lg hover:bg-gray-100 transition-colors text-lg">
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="px-8 py-4 bg-white text-black font-semibold rounded-lg hover:bg-gray-100 transition-colors text-lg"
+          >
             Request Early Access
           </button>
         </div>
@@ -225,7 +235,10 @@ export default function Home() {
           </p>
 
           <div>
-            <button className="px-10 py-5 bg-white text-black font-semibold rounded-lg hover:bg-gray-100 transition-colors text-lg">
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="px-10 py-5 bg-white text-black font-semibold rounded-lg hover:bg-gray-100 transition-colors text-lg"
+            >
               Get Early Access
             </button>
           </div>
@@ -243,6 +256,9 @@ export default function Home() {
           <p className="mt-2">AluminatiAI.com</p>
         </div>
       </footer>
+
+      {/* EMAIL SIGNUP MODAL */}
+      <EmailSignupModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </main>
   );
 }

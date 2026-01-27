@@ -1,8 +1,25 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AluminatiAI Landing Page
+
+This is the landing page for AluminatiAI - Energy Intelligence for AI Infrastructure.
+
+Built with [Next.js](https://nextjs.org) and [Tailwind CSS](https://tailwindcss.com).
 
 ## Getting Started
 
-First, run the development server:
+### 1. Install Dependencies
+
+```bash
+npm install
+```
+
+### 2. Set Up Database
+
+The landing page uses Supabase (PostgreSQL) to store early access requests. Follow the [DATABASE_SETUP.md](./DATABASE_SETUP.md) guide to:
+- Create a Supabase project
+- Set up the database schema
+- Configure environment variables
+
+### 3. Run the Development Server
 
 ```bash
 npm run dev
