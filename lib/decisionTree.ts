@@ -14,6 +14,7 @@ export interface TreeNode {
   confidence?: number;     // Confidence in recommendation (0-1)
   children: TreeNode[];    // Child nodes
   tooltip?: string;        // Extended tooltip text
+  expanded?: boolean;      // For collapse/expand functionality in React Flow
 }
 
 /**
