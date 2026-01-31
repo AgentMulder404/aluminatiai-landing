@@ -23,12 +23,12 @@ const supabase = createClient(
  */
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  console.log(`\n📖 GET /api/workloads/${params.id}`);
+  const { id } = await params;
+  console.log(`\n📖 GET /api/workloads/${id}`);
 
   try {
-    const { id } = params;
     const { searchParams } = request.nextUrl;
     const includeHistory = searchParams.get("history") === "true";
 
@@ -106,7 +106,7 @@ export async function GET(
 
     return NextResponse.json(response);
   } catch (error) {
-    console.error(`❌ Error in GET /api/workloads/${params.id}:`, error);
+    console.error(`❌ Error in GET /api/workloads/${id}:`, error);
 
     return NextResponse.json(
       {
@@ -124,12 +124,12 @@ export async function GET(
  */
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  console.log(`\n🔄 PATCH /api/workloads/${params.id}`);
+  const { id } = await params;
+  console.log(`\n🔄 PATCH /api/workloads/${id}`);
 
   try {
-    const { id } = params;
     const body = await request.json();
     const { status } = body;
 
@@ -172,7 +172,7 @@ export async function PATCH(
       message: "Workload updated successfully",
     });
   } catch (error) {
-    console.error(`❌ Error in PATCH /api/workloads/${params.id}:`, error);
+    console.error(`❌ Error in PATCH /api/workloads/${id}:`, error);
 
     return NextResponse.json(
       {

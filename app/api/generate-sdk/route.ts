@@ -224,22 +224,22 @@ class AluminatiEnergyTracker:
         for attempt in range(max_retries):
             try:
                 response = requests.post(
-                    f"{self.api_base_url}/api/workloads",
+                    f"\${self.api_base_url}/api/workloads",
                     json=payload,
                     timeout=30
                 )
                 response.raise_for_status()
 
                 result = response.json()
-                print(f"✅ Workload submitted: {result['id']}")
-                print(f"📊 Estimates: {result['estimates']['kwh']} kWh, "
-                      f"{result['estimates']['carbon_kg']} kg CO₂e, "
-                      f"${result['estimates']['cost_usd']}")
+                print(f"✅ Workload submitted: \${result['id']}")
+                print(f"📊 Estimates: \${result['estimates']['kwh']} kWh, "
+                      f"\${result['estimates']['carbon_kg']} kg CO₂e, "
+                      f"$\${result['estimates']['cost_usd']}")
 
                 return result
 
             except requests.exceptions.RequestException as e:
-                print(f"⚠️  Attempt {attempt + 1}/{max_retries} failed: {e}")
+                print(f"⚠️  Attempt \${attempt + 1}/\${max_retries} failed: \${e}")
                 if attempt < max_retries - 1:
                     time.sleep(2 ** attempt)  # Exponential backoff
                 else:
@@ -249,7 +249,7 @@ class AluminatiEnergyTracker:
 
     def get_workload(self, workload_id: str) -> Dict[str, Any]:
         """Retrieve workload details by ID"""
-        response = requests.get(f"{self.api_base_url}/api/workloads/{workload_id}")
+        response = requests.get(f"\${self.api_base_url}/api/workloads/\${workload_id}")
         response.raise_for_status()
         return response.json()
 
@@ -271,7 +271,7 @@ if __name__ == "__main__":
 
     # Optionally retrieve later
     # workload = tracker.get_workload(result['id'])
-    # print(f"Status: {workload['status']}")`,
+    # print(f"Status: \${workload['status']}")`,
 
     javascript: `// AluminatiAI Energy Tracker SDK
 const axios = require('axios');

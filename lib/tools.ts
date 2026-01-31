@@ -163,7 +163,7 @@ function calculateEnergy(args: {
     cost_usd: Math.round(costUsd * 100) / 100,
     power_draw_watts: powerDrawWatts,
     effective_power_watts: Math.round(powerDrawWatts * utilizationFactor * pUE),
-    calculation: `${powerDrawWatts}W × ${num_gpus} GPUs × ${hours}h × ${utilizationPct}% util × ${pUE} PUE ÷ 1000 = ${Math.round(energyKwh * 100) / 100} kWh`
+    calculation: `${powerDrawWatts}W × ${num_gpus} GPUs × ${hours}h × ${utilization_pct}% util × ${pUE} PUE ÷ 1000 = ${Math.round(energyKwh * 100) / 100} kWh`
   };
 }
 
