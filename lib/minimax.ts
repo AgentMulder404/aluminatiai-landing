@@ -196,8 +196,11 @@ export function parseAgentOutput(finalAnswer: string): any {
     const parsed = JSON.parse(finalAnswer);
     return parsed;
   } catch {
+    // Clean up the response by removing extra backticks and malformed content
+    let cleaned = finalAnswer.trim();
+
     // If not valid JSON, try to extract JSON from markdown code blocks
-    const jsonMatch = finalAnswer.match(/```(?:json)?\s*(\{[\s\S]*?\})\s*```/);
+    const jsonMatch = cleaned.match(/```(?:json)?\s*(\{[\s\S]*?\})\s*```/);
     if (jsonMatch) {
       try {
         return JSON.parse(jsonMatch[1]);
@@ -206,29 +209,52 @@ export function parseAgentOutput(finalAnswer: string): any {
       }
     }
 
-    // Try to fix truncated JSON by adding closing braces
-    try {
-      let fixedJson = finalAnswer.trim();
+    // Try to extract the first valid JSON object
+    // Find the first { and try to find its matching }
+    const firstBrace = cleaned.indexOf('{');
+    if (firstBrace !== -1) {
+      let depth = 0;
+      let inString = false;
+      let escapeNext = false;
 
-      // Count opening and closing braces
-      const openBraces = (fixedJson.match(/\{/g) || []).length;
-      const closeBraces = (fixedJson.match(/\}/g) || []).length;
-      const openBrackets = (fixedJson.match(/\[/g) || []).length;
-      const closeBrackets = (fixedJson.match(/\]/g) || []).length;
+      for (let i = firstBrace; i < cleaned.length; i++) {
+        const char = cleaned[i];
 
-      // Add missing closing brackets and braces
-      for (let i = 0; i < openBrackets - closeBrackets; i++) {
-        fixedJson += ']';
+        if (escapeNext) {
+          escapeNext = false;
+          continue;
+        }
+
+        if (char === '\\') {
+          escapeNext = true;
+          continue;
+        }
+
+        if (char === '"') {
+          inString = !inString;
+          continue;
+        }
+
+        if (!inString) {
+          if (char === '{') {
+            depth++;
+          } else if (char === '}') {
+            depth--;
+            if (depth === 0) {
+              // Found the matching closing brace
+              const jsonStr = cleaned.substring(firstBrace, i + 1);
+              try {
+                const parsed = JSON.parse(jsonStr);
+                console.log("✅ Extracted valid JSON from response");
+                return parsed;
+              } catch {
+                // Try next approach
+                break;
+              }
+            }
+          }
+        }
       }
-      for (let i = 0; i < openBraces - closeBraces; i++) {
-        fixedJson += '}';
-      }
-
-      const parsed = JSON.parse(fixedJson);
-      console.log("✅ Fixed truncated JSON");
-      return parsed;
-    } catch {
-      // Fall through
     }
 
     // If still can't parse, return a basic structure
