@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import GanttChart from "./GanttChart";
+import DecisionTreeVisualization from "./DecisionTreeVisualization";
 
 interface Job {
   id: string;
@@ -26,9 +27,21 @@ interface ScheduleAction {
   start_time: number;
 }
 
+interface DecisionNode {
+  depth: number;
+  action: {
+    job_id: string;
+    gpu_ids: string[];
+    start_time: number;
+  };
+  score: number;
+  nodes_explored_for_decision: number;
+}
+
 interface ScheduleResult {
   optimal_schedule: ScheduleAction[];
   naive_schedule?: ScheduleAction[];
+  decision_tree: DecisionNode[];
   metrics: {
     total_time: number;
     total_energy_cost: number;
@@ -236,6 +249,14 @@ export default function MinimaxScheduler() {
                 />
               )}
             </div>
+
+            {/* Decision Tree Visualization */}
+            {result.decision_tree && result.decision_tree.length > 0 && (
+              <DecisionTreeVisualization
+                decisionTree={result.decision_tree}
+                searchStats={result.search_stats}
+              />
+            )}
 
             {/* Schedule */}
             <div className="bg-neutral-900 rounded-lg p-6 border border-neutral-800">
