@@ -4,18 +4,21 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 
 export const runtime = "nodejs";
+export const dynamic = 'force-dynamic';
 
-// Supabase client
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!,
-  {
-    auth: {
-      persistSession: false,
-      autoRefreshToken: false,
-    },
-  }
-);
+// Create Supabase client (lazy initialization)
+function getSupabaseClient() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    {
+      auth: {
+        persistSession: false,
+        autoRefreshToken: false,
+      },
+    }
+  );
+}
 
 /**
  * GET /api/workloads/[id]
@@ -42,7 +45,7 @@ export async function GET(
     }
 
     // Fetch workload from database
-    const { data, error } = await supabase
+    const { data, error } = await getSupabaseClient()
       .from("workloads")
       .select("*")
       .eq("id", id)
@@ -146,7 +149,7 @@ export async function PATCH(
     }
 
     // Update workload
-    const { data, error } = await supabase
+    const { data, error } = await getSupabaseClient()
       .from("workloads")
       .update({ status, updated_at: new Date().toISOString() })
       .eq("id", id)
