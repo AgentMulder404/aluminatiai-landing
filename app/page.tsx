@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import EmailSignupModal from "@/components/EmailSignupModal";
 
 export default function Home() {
@@ -8,6 +9,43 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-black text-white">
+      {/* DEMO BANNER */}
+      <div className="bg-gradient-to-r from-purple-600 to-blue-600 px-4 py-3 text-center">
+        <p className="text-sm md:text-base font-medium">
+          <span className="mr-2">⚡</span>
+          <span className="font-semibold">New:</span> AI-powered GPU scheduler that saves 26% on completion time
+          <Link
+            href="/scheduler"
+            className="ml-3 underline underline-offset-2 hover:text-white/90 transition-colors font-semibold"
+          >
+            Try Live Demo →
+          </Link>
+        </p>
+      </div>
+
+      {/* NAVIGATION */}
+      <nav className="sticky top-0 z-50 bg-black/95 backdrop-blur-sm border-b border-neutral-800">
+        <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+          <Link href="/" className="text-xl font-bold">
+            AluminatiAI
+          </Link>
+          <div className="flex gap-6 items-center">
+            <Link
+              href="/scheduler"
+              className="text-sm font-medium text-gray-300 hover:text-white transition-colors"
+            >
+              Live Demo
+            </Link>
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="px-4 py-2 bg-white text-black text-sm font-semibold rounded-lg hover:bg-gray-100 transition-colors"
+            >
+              Get Access
+            </button>
+          </div>
+        </div>
+      </nav>
+
       {/* HERO */}
       <section className="px-6 py-32 md:py-40 text-center max-w-6xl mx-auto">
         <h1 className="text-5xl md:text-7xl font-bold tracking-tight leading-tight">
@@ -20,7 +58,13 @@ export default function Home() {
           AluminatiAI makes AI energy usage transparent, attributable, and optimizable—so you can reduce waste, control costs, and build energy-aware infrastructure without slowing innovation.
         </p>
 
-        <div className="mt-12">
+        <div className="mt-12 flex flex-col sm:flex-row gap-4 justify-center items-center">
+          <Link
+            href="/scheduler"
+            className="px-8 py-4 bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold rounded-lg hover:from-purple-700 hover:to-blue-700 transition-all text-lg shadow-lg hover:shadow-xl"
+          >
+            Try Interactive Demo
+          </Link>
           <button
             onClick={() => setIsModalOpen(true)}
             className="px-8 py-4 bg-white text-black font-semibold rounded-lg hover:bg-gray-100 transition-colors text-lg"
