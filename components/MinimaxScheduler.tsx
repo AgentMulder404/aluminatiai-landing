@@ -215,7 +215,7 @@ export default function MinimaxScheduler() {
             </div>
 
             {/* Gantt Chart Visualizations */}
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className="space-y-6">
               <GanttChart
                 schedule={result.optimal_schedule}
                 jobs={DEMO_JOBS}

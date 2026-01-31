@@ -49,7 +49,7 @@ const getJobColor = (jobId: string): string => {
 export default function GanttChart({ schedule, jobs, gpus, title, totalTime, maxTime }: GanttChartProps) {
   // Use maxTime if provided, otherwise use totalTime with some padding
   const timelineMax = maxTime || Math.max(totalTime, 300);
-  const pixelsPerMinute = 600 / timelineMax; // 600px width for timeline
+  const pixelsPerMinute = 800 / timelineMax; // 800px width for timeline
 
   // Build GPU timeline data
   const gpuTimelines = gpus.map(gpu => {
@@ -113,7 +113,7 @@ export default function GanttChart({ schedule, jobs, gpus, title, totalTime, max
             </div>
 
             {/* Timeline */}
-            <div className="flex-1 relative h-12 bg-black rounded border border-neutral-700">
+            <div className="flex-1 relative h-16 bg-black rounded border border-neutral-700">
               {/* Grid lines */}
               {[0.25, 0.5, 0.75].map((fraction, i) => (
                 <div
@@ -131,7 +131,7 @@ export default function GanttChart({ schedule, jobs, gpus, title, totalTime, max
                 return (
                   <div
                     key={idx}
-                    className={`absolute top-1 bottom-1 ${task.color} rounded px-2 flex items-center justify-center text-xs font-semibold text-white truncate shadow-lg hover:z-10 hover:scale-105 transition-transform cursor-pointer group`}
+                    className={`absolute top-2 bottom-2 ${task.color} rounded px-3 flex items-center justify-center text-sm font-semibold text-white truncate shadow-lg hover:z-10 hover:scale-105 transition-transform cursor-pointer group`}
                     style={{
                       left: `${left}%`,
                       width: `${width}%`,
@@ -139,7 +139,7 @@ export default function GanttChart({ schedule, jobs, gpus, title, totalTime, max
                     title={`${task.jobId}: ${task.startTime}-${task.startTime + task.duration} min (${task.duration} min)`}
                   >
                     <span className="truncate">{task.jobId}</span>
-                    <div className="absolute hidden group-hover:block bg-black text-white text-xs rounded px-2 py-1 -top-8 left-1/2 transform -translate-x-1/2 whitespace-nowrap shadow-xl border border-neutral-700 z-20">
+                    <div className="absolute hidden group-hover:block bg-black text-white text-xs rounded px-2 py-1 -top-10 left-1/2 transform -translate-x-1/2 whitespace-nowrap shadow-xl border border-neutral-700 z-20">
                       {task.jobId}<br />
                       {task.startTime}→{task.startTime + task.duration} min ({task.duration}m)
                     </div>
