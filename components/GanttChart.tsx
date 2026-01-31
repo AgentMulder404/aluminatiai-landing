@@ -48,7 +48,7 @@ const getJobColor = (jobId: string): string => {
 
 export default function GanttChart({ schedule, jobs, gpus, title, totalTime, maxTime }: GanttChartProps) {
   // Use maxTime if provided, otherwise use totalTime with some padding
-  const timelineMax = maxTime || Math.max(totalTime, 300);
+  const timelineMax = maxTime || Math.max(totalTime, 500);
   const pixelsPerMinute = 800 / timelineMax; // 800px width for timeline
 
   // Build GPU timeline data
