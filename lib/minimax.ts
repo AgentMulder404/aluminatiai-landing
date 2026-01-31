@@ -4,19 +4,16 @@ import { Message, ToolCall, ToolResult } from "./types";
 import { TOOL_DEFINITIONS, executeToolCall } from "./tools";
 
 const MINIMAX_API_KEY = process.env.MINIMAX_API_KEY || "";
-const MINIMAX_API_URL = "https://api.minimax.chat/v1/text/chatcompletion_v2";
+const MINIMAX_API_URL = "https://api.minimax.io/v1/chat/completions";
 
 // System prompt for the energy advisor agent
 const SYSTEM_PROMPT = `You are Aluminati Energy Agent — an expert at estimating and optimizing energy consumption for large-scale AI training and inference workloads.
 
-Your mission: help AI teams understand and reduce their energy footprint without touching their actual infrastructure.
+Your mission: help AI teams understand and reduce their energy footprint by providing accurate energy estimates.
 
-Rules:
-- Be conservative and transparent with estimates
-- Always show your reasoning step-by-step
-- Use tools when you need precise calculations or lookups
-- If information is missing, ask clarifying questions via final answer
-- Final answer MUST be valid JSON matching this schema:
+CRITICAL: You MUST respond with ONLY valid JSON. No other text before or after.
+
+Response Schema (REQUIRED):
 {
   "estimated_kwh": number,
   "estimated_carbon_kg": number,
@@ -27,13 +24,21 @@ Rules:
   "clarifying_questions"?: string[]
 }
 
-When using tools:
-1. First use get_gpu_power_draw to understand the hardware
-2. Then use calculate_energy to get kWh estimates
-3. Use estimate_carbon to convert to emissions
-4. Finally use suggest_optimizations to provide actionable recommendations
+Calculation Guidelines:
+1. GPU Power Draw: Use typical TDP values (A100: 400W, V100: 300W, H100: 700W, T4: 70W, etc.)
+2. Energy Formula: kWh = (GPU_Power_Watts * num_gpus * duration_hours * utilization) / 1000
+3. Carbon: Use 0.4 kg CO2e per kWh as average grid intensity
+4. Cost: Use $0.15 per kWh as average electricity cost
+5. Show all calculation steps in reasoning_trace
 
-Be precise, cite your calculations, and help users make data-driven decisions about their AI energy usage.`;
+Optimization Suggestions:
+- Model quantization (INT8/INT4) can save 30-50% energy
+- Mixed precision (FP16/BF16) saves 20-30%
+- Efficient hardware (newer GPUs) saves 15-25%
+- Job scheduling to off-peak hours reduces carbon by 20-40%
+- Batch size optimization can improve GPU utilization
+
+Be conservative, transparent, and cite your math. Output ONLY JSON, nothing else.`;
 
 export interface AgentLoopOptions {
   userPrompt: string;
@@ -52,7 +57,7 @@ export interface AgentLoopResult {
  * Main agent loop - calls MiniMax M2.1 with tool calling until completion
  */
 export async function runAgentLoop(options: AgentLoopOptions): Promise<AgentLoopResult> {
-  const { userPrompt, maxIterations = 10, model = "abab6.5s-chat" } = options;
+  const { userPrompt, maxIterations = 10, model = "M2-her" } = options;
 
   const messages: Message[] = [
     { role: "system", content: SYSTEM_PROMPT },
@@ -77,64 +82,9 @@ export async function runAgentLoop(options: AgentLoopOptions): Promise<AgentLoop
       }
 
       const assistantMessage = response.choices[0].message;
-      console.log("🤖 Assistant response:", assistantMessage.content?.substring(0, 200) || "[tool calls]");
+      console.log("🤖 Assistant response:", assistantMessage.content?.substring(0, 200) || "[no content]");
 
-      // Check if there are tool calls
-      if (assistantMessage.tool_calls && assistantMessage.tool_calls.length > 0) {
-        console.log(`🔧 Tool calls requested: ${assistantMessage.tool_calls.length}`);
-
-        // Add assistant message to history
-        messages.push({
-          role: "assistant",
-          content: assistantMessage.content || "",
-          tool_calls: assistantMessage.tool_calls
-        });
-
-        // Execute all tool calls
-        const toolResults: ToolResult[] = [];
-
-        for (const toolCall of assistantMessage.tool_calls) {
-          const { id, function: func } = toolCall;
-          const { name, arguments: argsStr } = func;
-
-          console.log(`  🛠️  Calling tool: ${name}`);
-
-          try {
-            // Parse arguments
-            const args = JSON.parse(argsStr);
-            console.log(`     Args:`, args);
-
-            // Execute tool
-            const result = executeToolCall(name, args);
-            console.log(`     Result:`, result.substring(0, 150));
-
-            toolResults.push({
-              tool_call_id: id,
-              role: "tool",
-              name: name,
-              content: result
-            });
-
-            toolCallsMade++;
-          } catch (error) {
-            console.error(`     ❌ Error executing tool ${name}:`, error);
-            toolResults.push({
-              tool_call_id: id,
-              role: "tool",
-              name: name,
-              content: JSON.stringify({ error: String(error) })
-            });
-          }
-        }
-
-        // Add tool results to messages
-        messages.push(...toolResults);
-
-        // Continue loop to get next response
-        continue;
-      }
-
-      // No tool calls - this is the final answer
+      // Since we're not using tools, this should be the final JSON answer
       console.log("✅ Final answer received");
 
       return {
@@ -206,10 +156,11 @@ async function callMiniMaxAPI(messages: Message[], model: string): Promise<any> 
   const requestBody = {
     model,
     messages: formattedMessages,
-    tools: TOOL_DEFINITIONS,
-    tool_choice: "auto", // Let the model decide when to use tools
+    // tools: TOOL_DEFINITIONS,
+    // tool_choice: "auto", // Let the model decide when to use tools
     temperature: 0.7,
-    max_tokens: 2048
+    max_tokens: 2048,
+    response_format: { type: "json_object" } // Request JSON output
   };
 
   console.log("📤 Calling MiniMax API...");
@@ -231,6 +182,7 @@ async function callMiniMaxAPI(messages: Message[], model: string): Promise<any> 
 
   const data = await response.json();
   console.log("📥 MiniMax API response received");
+  console.log("Response structure:", JSON.stringify(data, null, 2).substring(0, 500));
 
   return data;
 }
@@ -240,7 +192,7 @@ async function callMiniMaxAPI(messages: Message[], model: string): Promise<any> 
  */
 export function parseAgentOutput(finalAnswer: string): any {
   try {
-    // Try to parse as JSON
+    // Try to parse as JSON directly
     const parsed = JSON.parse(finalAnswer);
     return parsed;
   } catch {
@@ -252,6 +204,31 @@ export function parseAgentOutput(finalAnswer: string): any {
       } catch {
         // Fall through
       }
+    }
+
+    // Try to fix truncated JSON by adding closing braces
+    try {
+      let fixedJson = finalAnswer.trim();
+
+      // Count opening and closing braces
+      const openBraces = (fixedJson.match(/\{/g) || []).length;
+      const closeBraces = (fixedJson.match(/\}/g) || []).length;
+      const openBrackets = (fixedJson.match(/\[/g) || []).length;
+      const closeBrackets = (fixedJson.match(/\]/g) || []).length;
+
+      // Add missing closing brackets and braces
+      for (let i = 0; i < openBrackets - closeBrackets; i++) {
+        fixedJson += ']';
+      }
+      for (let i = 0; i < openBraces - closeBraces; i++) {
+        fixedJson += '}';
+      }
+
+      const parsed = JSON.parse(fixedJson);
+      console.log("✅ Fixed truncated JSON");
+      return parsed;
+    } catch {
+      // Fall through
     }
 
     // If still can't parse, return a basic structure
