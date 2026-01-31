@@ -86,7 +86,7 @@ export default function GanttChart({ schedule, jobs, gpus, title, totalTime, max
         </div>
       </div>
 
-      <div className="space-y-3 min-w-[900px] overflow-x-auto">
+      <div className="space-y-4 min-w-[900px] overflow-x-auto">
         {/* Time axis */}
         <div className="flex items-center">
           <div className="w-32 text-sm font-medium text-gray-400">Time (min)</div>
@@ -113,12 +113,12 @@ export default function GanttChart({ schedule, jobs, gpus, title, totalTime, max
             </div>
 
             {/* Timeline */}
-            <div className="flex-1 relative h-14 bg-black rounded border border-neutral-700 min-w-[700px]">
+            <div className="flex-1 relative h-14 bg-neutral-950 rounded-md border-2 border-neutral-700 min-w-[700px] p-1.5">
               {/* Grid lines */}
               {[0.25, 0.5, 0.75].map((fraction, i) => (
                 <div
                   key={i}
-                  className="absolute top-0 bottom-0 w-px bg-neutral-800"
+                  className="absolute top-0 bottom-0 w-px bg-neutral-700"
                   style={{ left: `${fraction * 100}%` }}
                 />
               ))}
@@ -131,7 +131,7 @@ export default function GanttChart({ schedule, jobs, gpus, title, totalTime, max
                 return (
                   <div
                     key={idx}
-                    className={`absolute top-1.5 bottom-1.5 ${task.color} rounded px-2 flex items-center justify-center text-xs font-semibold text-white truncate shadow-lg hover:z-10 transition-all cursor-pointer group`}
+                    className={`absolute top-3 bottom-3 ${task.color} rounded-md px-2 flex items-center justify-center text-xs font-semibold text-white truncate shadow-md hover:z-10 hover:shadow-xl transition-all cursor-pointer group border border-white/10`}
                     style={{
                       left: `${left}%`,
                       width: `${width}%`,
@@ -139,7 +139,7 @@ export default function GanttChart({ schedule, jobs, gpus, title, totalTime, max
                     title={`${task.jobId}: ${task.startTime}-${task.startTime + task.duration} min (${task.duration} min)`}
                   >
                     <span className="truncate">{task.jobId}</span>
-                    <div className="absolute hidden group-hover:block bg-neutral-900 text-white text-sm rounded px-3 py-2 -top-14 left-1/2 transform -translate-x-1/2 whitespace-nowrap shadow-xl border border-neutral-600 z-20">
+                    <div className="absolute hidden group-hover:block bg-neutral-900 text-white text-sm rounded-lg px-3 py-2 -top-14 left-1/2 transform -translate-x-1/2 whitespace-nowrap shadow-xl border-2 border-neutral-600 z-20">
                       <div className="font-semibold">{task.jobId}</div>
                       <div className="text-xs text-gray-300">{task.startTime}→{task.startTime + task.duration} min ({task.duration}m)</div>
                     </div>
