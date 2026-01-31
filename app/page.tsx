@@ -12,13 +12,13 @@ export default function Home() {
       {/* DEMO BANNER */}
       <div className="bg-gradient-to-r from-purple-600 to-blue-600 px-4 py-3 text-center">
         <p className="text-sm md:text-base font-medium">
-          <span className="mr-2">⚡</span>
-          <span className="font-semibold">New:</span> AI-powered GPU scheduler that saves 26% on completion time
+          <span className="mr-2">🌳</span>
+          <span className="font-semibold">New:</span> Interactive optimization decision tree powered by MiniMax AI
           <Link
-            href="/scheduler"
+            href="/demo/tree"
             className="ml-3 underline underline-offset-2 hover:text-white/90 transition-colors font-semibold"
           >
-            Try Live Demo →
+            Explore Optimizations →
           </Link>
         </p>
       </div>
@@ -35,6 +35,12 @@ export default function Home() {
               className="text-sm font-medium text-gray-300 hover:text-white transition-colors"
             >
               Live Demo
+            </Link>
+            <Link
+              href="/demo/tree"
+              className="text-sm font-medium text-gray-300 hover:text-white transition-colors"
+            >
+              Decision Tree
             </Link>
             <Link
               href="/api-demo"
