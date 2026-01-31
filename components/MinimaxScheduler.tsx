@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import GanttChart from "./GanttChart";
 
 interface Job {
   id: string;
@@ -27,6 +28,7 @@ interface ScheduleAction {
 
 interface ScheduleResult {
   optimal_schedule: ScheduleAction[];
+  naive_schedule?: ScheduleAction[];
   metrics: {
     total_time: number;
     total_energy_cost: number;
@@ -210,6 +212,29 @@ export default function MinimaxScheduler() {
                   Nodes explored | {result.search_stats.nodes_pruned} pruned
                 </p>
               </div>
+            </div>
+
+            {/* Gantt Chart Visualizations */}
+            <div className="grid md:grid-cols-2 gap-6">
+              <GanttChart
+                schedule={result.optimal_schedule}
+                jobs={DEMO_JOBS}
+                gpus={DEMO_GPUS}
+                title="Minimax Optimized Schedule"
+                totalTime={result.metrics.total_time}
+                maxTime={Math.max(result.metrics.total_time, result.naive_metrics?.total_time || 0)}
+              />
+
+              {result.naive_schedule && result.naive_metrics && (
+                <GanttChart
+                  schedule={result.naive_schedule}
+                  jobs={DEMO_JOBS}
+                  gpus={DEMO_GPUS}
+                  title="Naive FIFO Schedule"
+                  totalTime={result.naive_metrics.total_time}
+                  maxTime={Math.max(result.metrics.total_time, result.naive_metrics.total_time)}
+                />
+              )}
             </div>
 
             {/* Schedule */}
