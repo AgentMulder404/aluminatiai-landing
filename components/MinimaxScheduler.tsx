@@ -77,7 +77,7 @@ export default function MinimaxScheduler() {
   const runOptimization = async () => {
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:8000/api/schedule', {
+      const response = await fetch('/api/schedule', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -96,7 +96,7 @@ export default function MinimaxScheduler() {
       setResult(data);
     } catch (error) {
       console.error('Error:', error);
-      alert('Failed to optimize schedule. Make sure the API is running on http://localhost:8000');
+      alert('Failed to optimize schedule. Please try again.');
     } finally {
       setLoading(false);
     }
