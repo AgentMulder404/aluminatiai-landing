@@ -123,8 +123,14 @@ export default function MinimaxScheduler() {
           <Link href="/" className="text-xl font-bold hover:text-gray-300 transition-colors">
             ← AluminatiAI
           </Link>
-          <div className="flex gap-4 items-center">
-            <span className="text-sm text-gray-400">Live Demo</span>
+          <div className="flex gap-6 items-center">
+            <span className="text-sm text-white">Live Demo</span>
+            <Link
+              href="/api-demo"
+              className="text-sm font-medium text-gray-300 hover:text-white transition-colors"
+            >
+              API
+            </Link>
           </div>
         </div>
       </nav>

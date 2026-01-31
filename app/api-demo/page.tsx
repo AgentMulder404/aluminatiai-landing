@@ -1,7 +1,7 @@
-import EnergyAdvisor from "@/components/EnergyAdvisor";
+import APIDemo from "@/components/APIDemo";
 import Link from "next/link";
 
-export default function EnergyAdvisorPage() {
+export default function APIDemoPage() {
   return (
     <div className="min-h-screen bg-black text-white">
       {/* Navigation */}
@@ -19,21 +19,26 @@ export default function EnergyAdvisorPage() {
             </Link>
             <Link
               href="/api-demo"
-              className="text-sm font-medium text-gray-300 hover:text-white transition-colors"
+              className="text-sm font-medium text-white"
             >
               API
             </Link>
+            <button
+              className="px-4 py-2 bg-white text-black text-sm font-semibold rounded-lg hover:bg-gray-100 transition-colors"
+            >
+              Get Access
+            </button>
           </div>
         </div>
       </nav>
 
       {/* Main Content */}
-      <EnergyAdvisor />
+      <APIDemo />
 
       {/* Footer */}
       <div className="max-w-7xl mx-auto px-8 py-12 text-center border-t border-neutral-800 mt-12">
         <p className="text-gray-400 mb-4">
-          Powered by MiniMax M2.1 with agentic tool calling
+          Passive energy monitoring API for AI workloads
         </p>
         <Link
           href="/"
