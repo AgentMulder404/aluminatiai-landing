@@ -3,9 +3,11 @@
 import { useState } from "react";
 import Link from "next/link";
 import EmailSignupModal from "@/components/EmailSignupModal";
+import TrialSignupModal from "@/components/TrialSignupModal";
 
 export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isTrialModalOpen, setIsTrialModalOpen] = useState(false);
 
   return (
     <main className="min-h-screen bg-black text-white">
@@ -238,6 +240,59 @@ export default function Home() {
         </div>
       </section>
 
+      {/* FREE TRIAL */}
+      <section className="px-6 py-24 md:py-32 bg-gradient-to-br from-purple-900/20 via-neutral-950 to-blue-900/20 border-y border-neutral-800">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-semibold mb-6">
+              Start Monitoring Your GPUs Today
+            </h2>
+            <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
+              Try our lightweight GPU monitoring agent free for 30 days.
+              Track energy costs, identify waste, and optimize your infrastructure—all from a real-time dashboard.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8 mb-12">
+            <div className="border border-neutral-800 bg-neutral-950/50 rounded-lg p-6 text-center">
+              <div className="text-3xl mb-4">⚡</div>
+              <h3 className="text-lg font-semibold mb-3">Lightweight</h3>
+              <p className="text-gray-400 text-sm leading-relaxed">
+                Less than 1% CPU overhead and 100MB RAM. Deploy in seconds with a single install script.
+              </p>
+            </div>
+
+            <div className="border border-neutral-800 bg-neutral-950/50 rounded-lg p-6 text-center">
+              <div className="text-3xl mb-4">📊</div>
+              <h3 className="text-lg font-semibold mb-3">Real-Time Dashboard</h3>
+              <p className="text-gray-400 text-sm leading-relaxed">
+                See your GPU energy costs live. Track power draw, utilization, and identify inefficient jobs instantly.
+              </p>
+            </div>
+
+            <div className="border border-neutral-800 bg-neutral-950/50 rounded-lg p-6 text-center">
+              <div className="text-3xl mb-4">🔒</div>
+              <h3 className="text-lg font-semibold mb-3">Your Data</h3>
+              <p className="text-gray-400 text-sm leading-relaxed">
+                Metrics stay in your infrastructure. Full control over retention, access, and privacy.
+              </p>
+            </div>
+          </div>
+
+          <div className="text-center">
+            <button
+              onClick={() => setIsTrialModalOpen(true)}
+              className="px-8 py-4 bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold rounded-lg hover:from-purple-700 hover:to-blue-700 transition-all text-lg shadow-lg hover:shadow-xl"
+            >
+              Start Free Trial
+            </button>
+            <p className="mt-4 text-sm text-gray-500">
+              No credit card required • 30-day free trial • Install in under 5 minutes
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* WHY DIFFERENT */}
       <section className="px-6 py-24 md:py-32 bg-neutral-950 border-y border-neutral-800">
         <div className="max-w-4xl mx-auto text-center">
@@ -315,6 +370,9 @@ export default function Home() {
 
       {/* EMAIL SIGNUP MODAL */}
       <EmailSignupModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+
+      {/* TRIAL SIGNUP MODAL */}
+      <TrialSignupModal isOpen={isTrialModalOpen} onClose={() => setIsTrialModalOpen(false)} />
     </main>
   );
 }
