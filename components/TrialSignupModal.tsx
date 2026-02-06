@@ -15,6 +15,7 @@ export default function TrialSignupModal({ isOpen, onClose }: TrialSignupModalPr
   const [password, setPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [needsEmailConfirmation, setNeedsEmailConfirmation] = useState(false);
   const router = useRouter();
 
   if (!isOpen) return null;
@@ -34,9 +35,16 @@ export default function TrialSignupModal({ isOpen, onClose }: TrialSignupModalPr
       }
 
       if (data.user) {
-        // Successfully signed up, redirect to setup page
-        onClose();
-        router.push("/dashboard/setup");
+        // Check if user has a session (email confirmation disabled)
+        if (data.session) {
+          // User is signed in, redirect to setup page
+          onClose();
+          router.push("/dashboard/setup");
+        } else {
+          // Email confirmation required
+          setNeedsEmailConfirmation(true);
+          setIsSubmitting(false);
+        }
       }
     } catch (err) {
       console.error("Error signing up:", err);
@@ -59,12 +67,35 @@ export default function TrialSignupModal({ isOpen, onClose }: TrialSignupModalPr
           </svg>
         </button>
 
-        <h2 className="text-2xl font-bold mb-2">Start Your Free Trial</h2>
-        <p className="text-gray-400 mb-6">
-          Get 30 days of GPU monitoring free. No credit card required.
-        </p>
+        {needsEmailConfirmation ? (
+          <div className="text-center py-8">
+            <div className="mb-4">
+              <svg className="w-16 h-16 mx-auto text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+            </div>
+            <h3 className="text-xl font-bold mb-2">Check Your Email</h3>
+            <p className="text-gray-400 mb-4">
+              We sent a confirmation link to <strong className="text-white">{email}</strong>
+            </p>
+            <p className="text-sm text-gray-500 mb-6">
+              Click the link in the email to verify your account, then sign in to access your dashboard.
+            </p>
+            <button
+              onClick={onClose}
+              className="px-6 py-3 bg-neutral-800 hover:bg-neutral-700 text-white rounded-lg transition-colors"
+            >
+              Close
+            </button>
+          </div>
+        ) : (
+          <>
+            <h2 className="text-2xl font-bold mb-2">Start Your Free Trial</h2>
+            <p className="text-gray-400 mb-6">
+              Get 30 days of GPU monitoring free. No credit card required.
+            </p>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label htmlFor="fullName" className="block text-sm font-medium text-gray-300 mb-2">
               Full Name
@@ -132,6 +163,8 @@ export default function TrialSignupModal({ isOpen, onClose }: TrialSignupModalPr
             By signing up, you agree to our Terms of Service and Privacy Policy.
           </p>
         </form>
+          </>
+        )}
       </div>
     </div>
   );
