@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { signIn } from "@/lib/auth-helpers";
 
@@ -9,8 +9,18 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    // Check if user just confirmed their email
+    const confirmed = searchParams.get('confirmed');
+    if (confirmed === 'true') {
+      setSuccessMessage('Email confirmed! Please sign in to continue.');
+    }
+  }, [searchParams]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -83,6 +93,12 @@ export default function LoginPage() {
                 className="w-full px-4 py-3 bg-black border border-neutral-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-purple-600 transition-colors"
               />
             </div>
+
+            {successMessage && (
+              <div className="bg-green-900/30 border border-green-700 rounded-lg p-3">
+                <p className="text-green-300 text-sm">{successMessage}</p>
+              </div>
+            )}
 
             {error && (
               <div className="bg-red-900/30 border border-red-700 rounded-lg p-3">

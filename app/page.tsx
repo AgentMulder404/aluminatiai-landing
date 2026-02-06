@@ -50,6 +50,12 @@ export default function Home() {
             >
               API
             </Link>
+            <Link
+              href="/login"
+              className="text-sm font-medium text-gray-300 hover:text-white transition-colors"
+            >
+              Sign In
+            </Link>
             <button
               onClick={() => setIsModalOpen(true)}
               className="px-4 py-2 bg-white text-black text-sm font-semibold rounded-lg hover:bg-gray-100 transition-colors"
