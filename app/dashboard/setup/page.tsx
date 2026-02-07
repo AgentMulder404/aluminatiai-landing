@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
@@ -8,21 +8,36 @@ export default function SetupPage() {
   const [apiKey, setApiKey] = useState<string>('');
   const [copied, setCopied] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
-  useEffect(() => {
-    // Fetch user's API key
+  const fetchProfile = useCallback(() => {
+    setLoading(true);
+    setError(null);
+
     fetch('/api/user/profile')
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) {
+          return res.json().then((data) => {
+            throw new Error(data.error || `Request failed (${res.status})`);
+          });
+        }
+        return res.json();
+      })
       .then((data) => {
         setApiKey(data.profile.api_key);
         setLoading(false);
       })
       .catch((err) => {
         console.error('Failed to fetch API key:', err);
+        setError(err.message || 'Failed to load your API key. Please try again.');
         setLoading(false);
       });
   }, []);
+
+  useEffect(() => {
+    fetchProfile();
+  }, [fetchProfile]);
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(apiKey);
@@ -55,6 +70,16 @@ export default function SetupPage() {
               <div className="flex items-center gap-2 p-4 bg-black border border-neutral-700 rounded-lg">
                 <div className="animate-spin rounded-full h-5 w-5 border-2 border-neutral-700 border-t-purple-600"></div>
                 <span className="text-gray-400">Loading API key...</span>
+              </div>
+            ) : error ? (
+              <div className="p-4 bg-red-950/50 border border-red-800 rounded-lg">
+                <p className="text-red-400 mb-3">{error}</p>
+                <button
+                  onClick={fetchProfile}
+                  className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm rounded-lg transition-colors"
+                >
+                  Retry
+                </button>
               </div>
             ) : (
               <div className="flex gap-2">

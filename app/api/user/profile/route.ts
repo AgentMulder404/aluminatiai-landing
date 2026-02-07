@@ -3,6 +3,8 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase-client';
+import { createSupabaseCookieClient } from '@/lib/supabase-server';
+import { generateApiKey } from '@/lib/api-auth';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -13,13 +15,13 @@ export const dynamic = 'force-dynamic';
  */
 export async function GET(request: NextRequest) {
   try {
-    const supabase = createSupabaseServerClient();
+    // Cookie-aware client for auth (reads session from request cookies)
+    const supabaseAuth = await createSupabaseCookieClient();
 
-    // Get authenticated user from session
     const {
       data: { user },
       error: authError,
-    } = await supabase.auth.getUser();
+    } = await supabaseAuth.auth.getUser();
 
     if (authError || !user) {
       return NextResponse.json({ error: 'Unauthorized. Please log in.' }, { status: 401 });
@@ -27,14 +29,41 @@ export async function GET(request: NextRequest) {
 
     const userId = user.id;
 
+    // Service-role client for DB operations (bypasses RLS)
+    const supabase = createSupabaseServerClient();
+
     // Fetch user profile from database
-    const { data: profile, error: profileError } = await supabase
+    let { data: profile, error: profileError } = await supabase
       .from('users')
       .select('*')
       .eq('id', userId)
       .single();
 
-    if (profileError) {
+    // Fallback: create profile row if it doesn't exist
+    if (profileError && profileError.code === 'PGRST116') {
+      const now = new Date();
+      const trialEnds = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
+
+      const { data: newProfile, error: insertError } = await supabase
+        .from('users')
+        .insert({
+          id: userId,
+          email: user.email,
+          api_key: generateApiKey(),
+          api_key_created_at: now.toISOString(),
+          trial_started_at: now.toISOString(),
+          trial_ends_at: trialEnds.toISOString(),
+        })
+        .select('*')
+        .single();
+
+      if (insertError) {
+        console.error('Profile creation error:', insertError);
+        return NextResponse.json({ error: 'Failed to create profile' }, { status: 500 });
+      }
+
+      profile = newProfile;
+    } else if (profileError) {
       console.error('Profile fetch error:', profileError);
       return NextResponse.json({ error: 'Failed to fetch profile' }, { status: 500 });
     }
@@ -80,13 +109,13 @@ export async function GET(request: NextRequest) {
  */
 export async function PATCH(request: NextRequest) {
   try {
-    const supabase = createSupabaseServerClient();
+    // Cookie-aware client for auth
+    const supabaseAuth = await createSupabaseCookieClient();
 
-    // Get authenticated user from session
     const {
       data: { user },
       error: authError,
-    } = await supabase.auth.getUser();
+    } = await supabaseAuth.auth.getUser();
 
     if (authError || !user) {
       return NextResponse.json({ error: 'Unauthorized. Please log in.' }, { status: 401 });
@@ -116,7 +145,9 @@ export async function PATCH(request: NextRequest) {
       return NextResponse.json({ error: 'No valid fields to update' }, { status: 400 });
     }
 
-    // Update profile
+    // Service-role client for DB operations
+    const supabase = createSupabaseServerClient();
+
     const { data: profile, error: updateError } = await supabase
       .from('users')
       .update(updates)

@@ -4,6 +4,24 @@
 import { NextRequest } from 'next/server';
 import { createSupabaseServerClient } from './supabase-client';
 
+const API_KEY_CHARSET = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
+const API_KEY_RAND_LENGTH = 59;
+
+/**
+ * Generate an API key matching the DB's generate_api_key() PL/pgSQL function.
+ * Format: alum_ + 59 random chars from a URL-safe, unambiguous charset.
+ */
+export function generateApiKey(): string {
+  const buf = new Uint8Array(API_KEY_RAND_LENGTH);
+  crypto.getRandomValues(buf);
+
+  let key = 'alum_';
+  for (let i = 0; i < API_KEY_RAND_LENGTH; i++) {
+    key += API_KEY_CHARSET[buf[i] % API_KEY_CHARSET.length];
+  }
+  return key;
+}
+
 export interface ApiAuthResult {
   userId: string | null;
   error: string | null;

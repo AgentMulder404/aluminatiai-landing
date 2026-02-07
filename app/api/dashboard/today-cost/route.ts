@@ -3,6 +3,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase-client';
+import { createSupabaseCookieClient } from '@/lib/supabase-server';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -13,19 +14,22 @@ export const dynamic = 'force-dynamic';
  */
 export async function GET(request: NextRequest) {
   try {
-    const supabase = createSupabaseServerClient();
+    // Cookie-aware client for auth
+    const supabaseAuth = await createSupabaseCookieClient();
 
-    // Get authenticated user from session
     const {
       data: { user },
       error: authError,
-    } = await supabase.auth.getUser();
+    } = await supabaseAuth.auth.getUser();
 
     if (authError || !user) {
       return NextResponse.json({ error: 'Unauthorized. Please log in.' }, { status: 401 });
     }
 
     const userId = user.id;
+
+    // Service-role client for DB queries
+    const supabase = createSupabaseServerClient();
 
     // Get user's electricity rate
     const { data: userData, error: userError } = await supabase

@@ -32,23 +32,3 @@ export function createSupabaseServerClient() {
     },
   });
 }
-
-/**
- * Get Supabase client for API routes with user context
- * This client respects RLS policies
- */
-export function createSupabaseApiClient() {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-  if (!supabaseUrl || !anonKey) {
-    throw new Error('Missing Supabase environment variables');
-  }
-
-  return createClient(supabaseUrl, anonKey, {
-    auth: {
-      persistSession: false,
-      autoRefreshToken: false,
-    },
-  });
-}
