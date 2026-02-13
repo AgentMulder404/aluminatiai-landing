@@ -5,6 +5,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase-client';
 import { createSupabaseCookieClient } from '@/lib/supabase-server';
 import { generateApiKey } from '@/lib/api-auth';
+import { rateLimit, getRateLimitHeaders } from '@/lib/rate-limiter';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -178,6 +179,80 @@ export async function PATCH(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid JSON in request body' }, { status: 400 });
     }
 
+    return NextResponse.json(
+      { error: 'Internal server error. Please try again.' },
+      { status: 500 }
+    );
+  }
+}
+
+/**
+ * POST /api/user/profile
+ * Rotate API key - generates a new key and invalidates the old one
+ */
+export async function POST(request: NextRequest) {
+  try {
+    // Cookie-aware client for auth
+    const supabaseAuth = await createSupabaseCookieClient();
+
+    const {
+      data: { user },
+      error: authError,
+    } = await supabaseAuth.auth.getUser();
+
+    if (authError || !user) {
+      return NextResponse.json({ error: 'Unauthorized. Please log in.' }, { status: 401 });
+    }
+
+    const userId = user.id;
+
+    // Rate limiting: 5 key rotations per hour per user
+    const rateLimitResult = rateLimit(`api-key-rotate:${userId}`, 5, 3600000);
+    if (!rateLimitResult.allowed) {
+      return NextResponse.json(
+        { error: 'Rate limit exceeded. Max 5 key rotations per hour.' },
+        { status: 429, headers: getRateLimitHeaders(rateLimitResult, 5) }
+      );
+    }
+
+    // Parse body to check for action
+    const body = await request.json().catch(() => ({}));
+    if (body.action !== 'rotate_api_key') {
+      return NextResponse.json(
+        { error: 'Invalid action. Use { "action": "rotate_api_key" }' },
+        { status: 400 }
+      );
+    }
+
+    // Generate new API key (using crypto.getRandomValues - secure)
+    const newApiKey = generateApiKey();
+
+    // Service-role client for DB operations
+    const supabase = createSupabaseServerClient();
+
+    const { data: profile, error: updateError } = await supabase
+      .from('users')
+      .update({
+        api_key: newApiKey,
+        api_key_created_at: new Date().toISOString(),
+      })
+      .eq('id', userId)
+      .select('id, email, api_key, api_key_created_at')
+      .single();
+
+    if (updateError) {
+      console.error('API key rotation error:', updateError);
+      return NextResponse.json({ error: 'Failed to rotate API key' }, { status: 500 });
+    }
+
+    return NextResponse.json({
+      success: true,
+      message: 'API key rotated successfully. Update your agent configuration with the new key.',
+      api_key: profile.api_key,
+      api_key_created_at: profile.api_key_created_at,
+    });
+  } catch (error) {
+    console.error('API key rotation error:', error);
     return NextResponse.json(
       { error: 'Internal server error. Please try again.' },
       { status: 500 }

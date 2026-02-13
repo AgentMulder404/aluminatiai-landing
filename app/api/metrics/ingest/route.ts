@@ -117,6 +117,62 @@ export async function POST(request: NextRequest) {
           { status: 400 }
         );
       }
+
+      // Power draw range (0-1500W covers all enterprise GPUs including A100/H100)
+      if (m.power_draw_w < 0 || m.power_draw_w > 1500) {
+        return NextResponse.json(
+          { error: `Invalid power_draw_w at index ${i}: must be 0-1500` },
+          { status: 400 }
+        );
+      }
+
+      // Temperature range (0-120°C covers all operating conditions)
+      if (m.temperature_c < 0 || m.temperature_c > 120) {
+        return NextResponse.json(
+          { error: `Invalid temperature_c at index ${i}: must be 0-120` },
+          { status: 400 }
+        );
+      }
+
+      // Memory used must be non-negative
+      if (m.memory_used_mb < 0) {
+        return NextResponse.json(
+          { error: `Invalid memory_used_mb at index ${i}: must be >= 0` },
+          { status: 400 }
+        );
+      }
+
+      // GPU index must be non-negative
+      if (m.gpu_index < 0) {
+        return NextResponse.json(
+          { error: `Invalid gpu_index at index ${i}: must be >= 0` },
+          { status: 400 }
+        );
+      }
+
+      // Timestamp sanity: not more than 5 minutes in the future
+      const metricTime = new Date(m.timestamp);
+      const fiveMinutesFromNow = new Date(Date.now() + 5 * 60 * 1000);
+      if (isNaN(metricTime.getTime())) {
+        return NextResponse.json(
+          { error: `Invalid timestamp at index ${i}: must be a valid ISO 8601 date` },
+          { status: 400 }
+        );
+      }
+      if (metricTime > fiveMinutesFromNow) {
+        return NextResponse.json(
+          { error: `Timestamp at index ${i} is too far in the future` },
+          { status: 400 }
+        );
+      }
+
+      // Energy delta must be non-negative when provided
+      if (m.energy_delta_j !== undefined && m.energy_delta_j !== null && m.energy_delta_j < 0) {
+        return NextResponse.json(
+          { error: `Invalid energy_delta_j at index ${i}: must be >= 0` },
+          { status: 400 }
+        );
+      }
     }
 
     // Transform metrics for database insertion

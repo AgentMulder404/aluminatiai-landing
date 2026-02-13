@@ -4,6 +4,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase-client';
 import { createSupabaseCookieClient } from '@/lib/supabase-server';
+import { rateLimit, getRateLimitHeaders } from '@/lib/rate-limiter';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -27,6 +28,15 @@ export async function GET(request: NextRequest) {
     }
 
     const userId = user.id;
+
+    // Rate limiting: 60 requests per minute per user
+    const rateLimitResult = rateLimit(`dashboard:chart:${userId}`, 60, 60000);
+    if (!rateLimitResult.allowed) {
+      return NextResponse.json(
+        { error: 'Rate limit exceeded. Max 60 requests per minute.' },
+        { status: 429, headers: getRateLimitHeaders(rateLimitResult, 60) }
+      );
+    }
 
     // Service-role client for DB queries
     const supabase = createSupabaseServerClient();
