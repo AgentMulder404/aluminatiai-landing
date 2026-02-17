@@ -26,7 +26,13 @@ interface MetricPayload {
   sm_clock_mhz?: number;
   memory_clock_mhz?: number;
   job_id?: string;
+  // Energy attribution fields (v2)
+  team_id?: string;
+  model_tag?: string;
+  scheduler_source?: 'kubernetes' | 'slurm' | 'runai' | 'manual';
 }
+
+const VALID_SCHEDULER_SOURCES = ['kubernetes', 'slurm', 'runai', 'manual'] as const;
 
 /**
  * POST /api/metrics/ingest
@@ -173,6 +179,28 @@ export async function POST(request: NextRequest) {
           { status: 400 }
         );
       }
+
+      // Validate scheduler_source when provided
+      if (m.scheduler_source && !VALID_SCHEDULER_SOURCES.includes(m.scheduler_source as any)) {
+        return NextResponse.json(
+          { error: `Invalid scheduler_source at index ${i}: must be one of ${VALID_SCHEDULER_SOURCES.join(', ')}` },
+          { status: 400 }
+        );
+      }
+
+      // Validate string length for attribution fields
+      if (m.team_id && m.team_id.length > 128) {
+        return NextResponse.json(
+          { error: `team_id at index ${i} exceeds max length of 128 characters` },
+          { status: 400 }
+        );
+      }
+      if (m.model_tag && m.model_tag.length > 128) {
+        return NextResponse.json(
+          { error: `model_tag at index ${i} exceeds max length of 128 characters` },
+          { status: 400 }
+        );
+      }
     }
 
     // Transform metrics for database insertion
@@ -196,6 +224,10 @@ export async function POST(request: NextRequest) {
       sm_clock_mhz: m.sm_clock_mhz || null,
       memory_clock_mhz: m.memory_clock_mhz || null,
       job_id: m.job_id || null,
+      // Attribution fields (v2)
+      team_id: m.team_id || null,
+      model_tag: m.model_tag || null,
+      scheduler_source: m.scheduler_source || null,
     }));
 
     // Insert metrics into TimescaleDB
