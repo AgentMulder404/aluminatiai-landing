@@ -140,7 +140,7 @@ export async function GET() {
 
   return NextResponse.json({
     status: "ok",
-    service: "AluminatiAI Energy Advisor Agent",
+    service: "AluminatiAi Energy Advisor Agent",
     configured: isConfigured,
     message: isConfigured
       ? "Agent ready to analyze workloads"

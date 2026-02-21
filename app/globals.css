@@ -7,3 +7,224 @@ html {
 body {
   background-color: black;
 }
+
+/* ── Keyframes ── */
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); border-color: rgba(34, 197, 94, 0.3); }
+  50% { box-shadow: 0 0 20px 4px rgba(34, 197, 94, 0.15); border-color: rgba(34, 197, 94, 0.6); }
+}
+
+@keyframes flow-energy {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes shimmer {
+  0% { opacity: 0.3; }
+  50% { opacity: 0.6; }
+  100% { opacity: 0.3; }
+}
+
+/* ── Watermark ── */
+
+.watermark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-15deg);
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(6rem, 15vw, 14rem);
+  font-weight: 700;
+  opacity: 0.03;
+  white-space: nowrap;
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+  color: white;
+}
+
+/* ── GPU Card ── */
+
+.gpu-card {
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(8px);
+  transition: all 0.4s ease;
+  overflow: hidden;
+}
+
+.gpu-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.08), transparent 60%);
+  pointer-events: none;
+}
+
+.gpu-card:hover {
+  border-color: rgba(34, 197, 94, 0.4);
+  box-shadow: 0 0 24px 2px rgba(34, 197, 94, 0.1), inset 0 0 24px rgba(34, 197, 94, 0.03);
+  transform: translateY(-2px);
+}
+
+.gpu-card:hover::after {
+  opacity: 1;
+}
+
+/* ── Energy Line (How It Works connector) ── */
+
+.energy-line {
+  position: relative;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.1);
+  flex: 1;
+  align-self: center;
+  overflow: hidden;
+}
+
+.energy-line::after {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: 0;
+  width: 100%;
+  height: 6px;
+  background: linear-gradient(90deg, transparent, #22c55e, transparent);
+  background-size: 200% 100%;
+  animation: flow-energy 2.5s linear infinite;
+}
+
+/* ── Glass Card ── */
+
+.glass-card {
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  transition: all 0.4s ease;
+}
+
+.glass-card:hover {
+  border-color: rgba(34, 197, 94, 0.3);
+  box-shadow: 0 0 20px 2px rgba(34, 197, 94, 0.08);
+}
+
+/* ── Feature Block (animated green left border) ── */
+
+.feature-block {
+  position: relative;
+  border-left: 3px solid rgba(34, 197, 94, 0.3);
+  padding-left: 2rem;
+  transition: all 0.4s ease;
+}
+
+.feature-block:hover {
+  border-left-color: #22c55e;
+  padding-left: 2.25rem;
+}
+
+.feature-block::before {
+  content: '';
+  position: absolute;
+  left: -3px;
+  top: 0;
+  width: 3px;
+  height: 0%;
+  background: #22c55e;
+  transition: height 0.6s ease;
+}
+
+.feature-block:hover::before {
+  height: 100%;
+}
+
+/* ── Fade-up animation utility ── */
+
+.animate-fade-up {
+  animation: fade-up 0.7s ease both;
+}
+
+/* ── Floating animation utility ── */
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+/* ── Green wave background pattern ── */
+
+.green-wave-bg {
+  position: relative;
+  overflow: hidden;
+}
+
+/* ── Neural Path Keyframes ── */
+
+@keyframes wire-electricity {
+  0% { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: -20; }
+}
+
+@keyframes node-ground-glow {
+  0%, 100% { opacity: 0.4; transform: scaleX(1); }
+  50% { opacity: 0.7; transform: scaleX(1.1); }
+}
+
+@keyframes map-complete-pulse {
+  0%, 100% { border-color: rgba(34, 197, 94, 0.3); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+  50% { border-color: rgba(34, 197, 94, 0.8); box-shadow: 0 0 16px 4px rgba(34, 197, 94, 0.2); }
+}
+
+.neural-node-glow-shadow {
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50px;
+  height: 12px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(34, 197, 94, 0.5) 0%, transparent 70%);
+  animation: node-ground-glow 2s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.network-map-complete {
+  animation: map-complete-pulse 2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .neural-node-glow-shadow,
+  .network-map-complete {
+    animation: none;
+  }
+  .terrain-canvas {
+    opacity: 0.5;
+  }
+}
+
+.green-wave-bg::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 120px;
+  background: linear-gradient(180deg, transparent, rgba(30, 110, 66, 0.08));
+  pointer-events: none;
+}

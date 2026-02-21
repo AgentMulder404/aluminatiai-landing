@@ -10,7 +10,7 @@ const MINIMAX_API_KEY = process.env.MINIMAX_API_KEY || "";
 const MINIMAX_API_URL = "https://api.minimax.io/v1/chat/completions";
 
 // Exact system prompt as specified
-const SYSTEM_PROMPT = `You are AluminatiAI Optimization Tree Generator.
+const SYSTEM_PROMPT = `You are AluminatiAi Optimization Tree Generator.
 Given an AI workload description or agent's reasoning trace, create a decision tree JSON for energy optimization paths.
 Output ONLY valid JSON matching this schema (no extra text):
 {
@@ -300,7 +300,7 @@ function getFallbackTree(workloadDescription: string): TreeNode {
  */
 export async function GET() {
   return NextResponse.json({
-    service: "AluminatiAI Decision Tree Generator",
+    service: "AluminatiAi Decision Tree Generator",
     model: "MiniMax M2.1",
     status: MINIMAX_API_KEY ? "ready" : "not configured",
   });

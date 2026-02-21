@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "AluminatiAI — Energy Intelligence for AI Infrastructure",
+  title: "AluminatiAi — Energy Intelligence for AI Infrastructure",
   description: "Make AI energy usage transparent, attributable, and optimizable. GPU-level power monitoring mapped to jobs, models, and teams.",
 };
 

@@ -4,18 +4,35 @@ import { useState } from "react";
 import Link from "next/link";
 import EmailSignupModal from "@/components/EmailSignupModal";
 import TrialSignupModal from "@/components/TrialSignupModal";
+import { NeuralPathProvider } from "@/components/neural-path/NeuralPathProvider";
+import NeuralPathOverlay from "@/components/neural-path/NeuralPathOverlay";
+import { TerrainProvider, useTerrainContext } from "@/components/terrain/TerrainProvider";
+import TerrainCanvas from "@/components/terrain/TerrainCanvas";
+
+const gpuLabels = ["A100", "H100", "L40S", "RTX 4090", "V100", "T4"];
 
 export default function Home() {
+  return (
+    <TerrainProvider>
+      <HomeInner />
+    </TerrainProvider>
+  );
+}
+
+function HomeInner() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isTrialModalOpen, setIsTrialModalOpen] = useState(false);
+  const { fireCTA } = useTerrainContext();
 
   return (
-    <main className="min-h-screen bg-black text-white">
+    <NeuralPathProvider>
+    <main className="relative min-h-screen bg-black text-white">
+      <TerrainCanvas />
       {/* DEMO BANNER */}
-      <div className="bg-gradient-to-r from-purple-600 to-blue-600 px-4 py-3 text-center">
+      <div className="relative z-10 bg-gradient-to-r from-forest to-blue-600 px-4 py-3 text-center">
         <p className="text-sm md:text-base font-medium">
-          <span className="mr-2">🌳</span>
-          <span className="font-semibold">New:</span> Interactive optimization decision tree powered by MiniMax AI
+          <span className="font-semibold">New:</span> Interactive optimization
+          decision tree powered by MiniMax AI
           <Link
             href="/demo/tree"
             className="ml-3 underline underline-offset-2 hover:text-white/90 transition-colors font-semibold"
@@ -26,39 +43,39 @@ export default function Home() {
       </div>
 
       {/* NAVIGATION */}
-      <nav className="sticky top-0 z-50 bg-black/95 backdrop-blur-sm border-b border-neutral-800">
+      <nav className="sticky top-0 z-50 bg-black/80 backdrop-blur-xl border-b border-forest/20">
         <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-          <Link href="/" className="text-xl font-bold">
-            AluminatiAI
+          <Link href="/" className="text-xl font-bold tracking-tight">
+            Aluminati<span className="text-glow">Ai</span>
           </Link>
           <div className="flex gap-6 items-center">
             <Link
               href="/scheduler"
-              className="text-sm font-medium text-gray-300 hover:text-white transition-colors"
+              className="text-sm font-medium text-gray-300 hover:text-glow transition-colors"
             >
               Live Demo
             </Link>
             <Link
               href="/demo/tree"
-              className="text-sm font-medium text-gray-300 hover:text-white transition-colors"
+              className="text-sm font-medium text-gray-300 hover:text-glow transition-colors"
             >
               Decision Tree
             </Link>
             <Link
               href="/api-demo"
-              className="text-sm font-medium text-gray-300 hover:text-white transition-colors"
+              className="text-sm font-medium text-gray-300 hover:text-glow transition-colors"
             >
               API
             </Link>
             <Link
               href="/login"
-              className="text-sm font-medium text-gray-300 hover:text-white transition-colors"
+              className="text-sm font-medium text-gray-300 hover:text-glow transition-colors"
             >
               Sign In
             </Link>
             <button
               onClick={() => setIsModalOpen(true)}
-              className="px-4 py-2 bg-white text-black text-sm font-semibold rounded-lg hover:bg-gray-100 transition-colors"
+              className="px-4 py-2 bg-gradient-to-r from-forest to-glow text-white text-sm font-semibold rounded-lg hover:opacity-90 transition-opacity"
             >
               Get Access
             </button>
@@ -67,318 +84,347 @@ export default function Home() {
       </nav>
 
       {/* HERO */}
-      <section className="px-6 py-32 md:py-40 text-center max-w-6xl mx-auto">
-        <h1 className="text-5xl md:text-7xl font-bold tracking-tight leading-tight">
-          Energy Intelligence for AI Infrastructure
-        </h1>
-        <p className="mt-8 text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
-          GPU-level power monitoring mapped to jobs, models, and teams.
-        </p>
-        <p className="mt-6 text-base md:text-lg text-gray-400 max-w-2xl mx-auto leading-relaxed">
-          AluminatiAI makes AI energy usage transparent, attributable, and optimizable—so you can reduce waste, control costs, and build energy-aware infrastructure without slowing innovation.
-        </p>
+      <section id="hero" className="relative z-10 px-6 py-28 md:py-40 overflow-hidden">
+        {/* Gradient background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-black via-forest/20 to-blue-900/20 pointer-events-none" />
+        {/* Watermark */}
+        <div className="watermark">AluminatAi</div>
 
-        <div className="mt-12 flex flex-col sm:flex-row gap-4 justify-center items-center">
-          <Link
-            href="/scheduler"
-            className="px-8 py-4 bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold rounded-lg hover:from-purple-700 hover:to-blue-700 transition-all text-lg shadow-lg hover:shadow-xl"
-          >
-            Try Interactive Demo
-          </Link>
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="px-8 py-4 bg-white text-black font-semibold rounded-lg hover:bg-gray-100 transition-colors text-lg"
-          >
-            Request Early Access
-          </button>
-        </div>
-      </section>
+        <div className="relative z-10 max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <h1 className="text-5xl md:text-7xl font-bold tracking-tight leading-tight">
+              AI Energy Usage is a{" "}
+              <span className="bg-gradient-to-r from-glow to-blue-400 bg-clip-text text-transparent">
+                Black Box
+              </span>
+            </h1>
+            <p className="mt-4 text-2xl md:text-3xl font-semibold text-glow">
+              We open it.
+            </p>
+            <p className="mt-6 text-lg md:text-xl text-gray-300 max-w-2xl mx-auto leading-relaxed">
+              See every watt your AI consumes. Know exactly where it goes. Cut
+              waste without cutting speed.
+            </p>
 
-      {/* MISSION */}
-      <section className="px-6 py-20 bg-neutral-950 border-y border-neutral-800">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-2xl md:text-3xl font-semibold text-center mb-8">
-            Our Mission
-          </h2>
-          <p className="text-gray-300 text-lg md:text-xl leading-relaxed">
-            AluminatiAI's mission is to make AI energy usage transparent, attributable, and optimizable.
-            As AI workloads scale, energy becomes a hidden constraint on cost, performance, and sustainability.
-            We give AI teams precise visibility into GPU-level power consumption—mapped to jobs, models, and teams—so they can reduce waste, control costs, and build energy-aware AI infrastructure without slowing innovation.
-          </p>
-        </div>
-      </section>
-
-      {/* PROBLEM */}
-      <section className="px-6 py-24 md:py-32">
-        <div className="max-w-5xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-semibold mb-16 text-center">
-            The Problem
-          </h2>
-
-          <div className="grid md:grid-cols-2 gap-12 md:gap-16">
-            <div className="space-y-6">
-              <h3 className="text-xl font-semibold text-gray-200">
-                AI Energy Usage Is Opaque
-              </h3>
-              <p className="text-gray-400 leading-relaxed">
-                Most AI teams have no visibility into how much energy their workloads consume.
-                GPUs draw hundreds of watts per card, but this data is rarely collected,
-                let alone attributed to specific jobs or models.
-              </p>
+            <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <Link
+                href="/scheduler"
+                className="px-8 py-4 bg-gradient-to-r from-forest to-glow text-white font-semibold rounded-lg hover:opacity-90 transition-opacity text-lg shadow-lg shadow-glow/20"
+              >
+                Try Interactive Demo
+              </Link>
+              <button
+                onClick={() => { fireCTA(); setIsModalOpen(true); }}
+                className="px-8 py-4 border border-white/30 text-white font-semibold rounded-lg hover:border-glow hover:text-glow transition-colors text-lg"
+              >
+                Request Early Access
+              </button>
             </div>
+          </div>
 
-            <div className="space-y-6">
-              <h3 className="text-xl font-semibold text-gray-200">
-                Cloud Bills Don't Tell the Story
-              </h3>
-              <p className="text-gray-400 leading-relaxed">
-                Utilization metrics show when GPUs are busy, but not how much power they consume.
-                Cloud invoices show instance costs, but hide the energy footprint.
-                Without attribution, optimization is guesswork.
-              </p>
-            </div>
-
-            <div className="space-y-6">
-              <h3 className="text-xl font-semibold text-gray-200">
-                Scale Amplifies the Gap
-              </h3>
-              <p className="text-gray-400 leading-relaxed">
-                As teams move from a few GPUs to hundreds or thousands,
-                energy becomes a real constraint—on budgets, on datacenter capacity,
-                and on sustainability commitments.
-              </p>
-            </div>
-
-            <div className="space-y-6">
-              <h3 className="text-xl font-semibold text-gray-200">
-                Compliance Lacks Technical Depth
-              </h3>
-              <p className="text-gray-400 leading-relaxed">
-                Sustainability reporting requires accurate energy data.
-                Generic carbon calculators don't understand AI workloads.
-                You need metrics that map to real infrastructure.
-              </p>
-            </div>
+          {/* GPU Card Grid */}
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 max-w-3xl mx-auto">
+            {gpuLabels.map((label, i) => (
+              <div
+                key={label}
+                className="gpu-card p-5 text-center"
+                style={{ animationDelay: `${i * 0.15}s` }}
+              >
+                <div
+                  className="animate-float"
+                  style={{ animationDelay: `${i * 0.5}s` }}
+                >
+                  <div className="text-xs text-glow/70 font-mono uppercase tracking-widest mb-2">
+                    GPU {String(i).padStart(2, "0")}
+                  </div>
+                  <div className="text-lg font-semibold">{label}</div>
+                  <div className="mt-2 h-1 rounded-full bg-gradient-to-r from-glow/60 to-blue-500/60 w-full" />
+                  <div className="mt-2 text-xs text-gray-500 font-mono">
+                    {Math.floor(180 + Math.random() * 120)}W
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* SOLUTION */}
-      <section className="px-6 py-24 md:py-32 bg-neutral-950">
+      {/* THE PROBLEM */}
+      <section id="problem" className="relative z-10 px-6 py-24 md:py-32 bg-neutral-950/80">
         <div className="max-w-5xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-semibold mb-16 text-center">
-            How AluminatiAI Solves This
+          <h2 className="text-3xl md:text-4xl font-semibold mb-4 text-center">
+            What You Can&apos;t See Is{" "}
+            <span className="text-glow">Costing You</span>
           </h2>
+          <p className="text-gray-400 text-center mb-14 max-w-2xl mx-auto">
+            AI infrastructure hides its biggest inefficiency in plain sight.
+          </p>
 
-          <div className="space-y-12">
-            <div className="border-l-2 border-white pl-8">
-              <h3 className="text-2xl font-semibold mb-4">
-                GPU-Level Power Monitoring
-              </h3>
-              <p className="text-gray-300 text-lg leading-relaxed">
-                We capture real-time power draw, utilization, and thermal data
-                directly from GPUs using lightweight agents that don't disrupt your workloads.
-              </p>
-            </div>
-
-            <div className="border-l-2 border-white pl-8">
-              <h3 className="text-2xl font-semibold mb-4">
-                Job-, Model-, and Team-Level Attribution
-              </h3>
-              <p className="text-gray-300 text-lg leading-relaxed">
-                Energy usage is mapped to the jobs that consumed it—not just the instance or cluster.
-                See which models, experiments, or teams are driving your energy footprint.
-              </p>
-            </div>
-
-            <div className="border-l-2 border-white pl-8">
-              <h3 className="text-2xl font-semibold mb-4">
-                Optimization Insights That Matter
-              </h3>
-              <p className="text-gray-300 text-lg leading-relaxed">
-                Compare training runs. Identify inefficient jobs.
-                Make energy-aware scheduling decisions.
-                Reduce waste without sacrificing performance.
-              </p>
-            </div>
+          <div className="grid md:grid-cols-2 gap-6">
+            {[
+              {
+                title: "Invisible Consumption",
+                body: "Your GPUs are running. But where's the power going?",
+              },
+              {
+                title: "Cost Without Cause",
+                body: "Cloud bills show cost. Not cause.",
+              },
+              {
+                title: "Scale Amplifies Waste",
+                body: "What wastes pennies on 10 GPUs burns thousands on 1,000.",
+              },
+              {
+                title: "Guesswork Compliance",
+                body: "Regulators want numbers. You have guesses.",
+              },
+            ].map((card) => (
+              <div key={card.title} className="glass-card p-8">
+                <h3 className="text-lg font-semibold text-white mb-3">
+                  {card.title}
+                </h3>
+                <p className="text-gray-300 text-lg leading-relaxed">
+                  {card.body}
+                </p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* HOW IT WORKS */}
-      <section className="px-6 py-24 md:py-32">
+      <section id="how-it-works" className="relative z-10 px-6 py-24 md:py-32">
         <div className="max-w-5xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-semibold mb-16 text-center">
             How It Works
           </h2>
 
-          <div className="grid md:grid-cols-3 gap-12 text-center">
-            <div>
-              <div className="text-4xl font-bold text-white mb-6">01</div>
-              <h4 className="text-2xl font-semibold mb-4">Collect</h4>
-              <p className="text-gray-400 leading-relaxed">
-                Lightweight agents deployed on your infrastructure capture
-                GPU power consumption, utilization, temperature, and clock speed—without
-                interfering with training or inference workloads.
+          {/* Desktop: horizontal flow */}
+          <div className="hidden md:flex items-stretch gap-0">
+            {[
+              {
+                step: "01",
+                title: "Install",
+                body: "A lightweight agent. 60 seconds. Zero disruption.",
+              },
+              {
+                step: "02",
+                title: "See",
+                body: "Every watt, mapped to every job, model, and team.",
+              },
+              {
+                step: "03",
+                title: "Save",
+                body: "Cut waste. Hit targets. Ship faster.",
+              },
+            ].map((item, i) => (
+              <div key={item.step} className="contents">
+                <div className="glass-card p-8 flex-1 text-center">
+                  <div className="text-3xl font-bold text-glow mb-4">
+                    {item.step}
+                  </div>
+                  <h4 className="text-xl font-semibold mb-3">{item.title}</h4>
+                  <p className="text-gray-400 leading-relaxed">{item.body}</p>
+                </div>
+                {i < 2 && <div className="energy-line" />}
+              </div>
+            ))}
+          </div>
+
+          {/* Mobile: vertical stack */}
+          <div className="md:hidden space-y-6">
+            {[
+              {
+                step: "01",
+                title: "Install",
+                body: "A lightweight agent. 60 seconds. Zero disruption.",
+              },
+              {
+                step: "02",
+                title: "See",
+                body: "Every watt, mapped to every job, model, and team.",
+              },
+              {
+                step: "03",
+                title: "Save",
+                body: "Cut waste. Hit targets. Ship faster.",
+              },
+            ].map((item) => (
+              <div key={item.step} className="glass-card p-8 text-center">
+                <div className="text-3xl font-bold text-glow mb-4">
+                  {item.step}
+                </div>
+                <h4 className="text-xl font-semibold mb-3">{item.title}</h4>
+                <p className="text-gray-400 leading-relaxed">{item.body}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* FEATURES */}
+      <section id="features" className="relative z-10 px-6 py-24 md:py-32 bg-neutral-950/80">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-3xl md:text-4xl font-semibold mb-4 text-center">
+            Energy Intelligence, Not Just Monitoring
+          </h2>
+          <p className="text-gray-400 text-center mb-14 max-w-2xl mx-auto">
+            Go beyond dashboards. Get actionable insight into every watt.
+          </p>
+
+          <div className="space-y-10">
+            <div className="feature-block">
+              <h3 className="text-2xl font-semibold mb-3">
+                See exactly where your power goes
+              </h3>
+              <p className="text-gray-300 text-lg leading-relaxed">
+                GPU-level power monitoring captures real-time consumption from
+                every card. No sampling, no estimates — actual watts, attributed
+                to actual work.
               </p>
             </div>
 
-            <div>
-              <div className="text-4xl font-bold text-white mb-6">02</div>
-              <h4 className="text-2xl font-semibold mb-4">Attribute</h4>
-              <p className="text-gray-400 leading-relaxed">
-                Energy metrics are mapped to specific jobs, models, users, and teams.
-                Not just "this GPU used 300W"—but "this training run consumed 15 kWh
-                over 6 hours."
+            <div className="feature-block">
+              <h3 className="text-2xl font-semibold mb-3">
+                Know who used what — down to the training run
+              </h3>
+              <p className="text-gray-300 text-lg leading-relaxed">
+                Energy gets mapped to jobs, models, users, and teams. Not just
+                &quot;this GPU drew 300W&quot; — but &quot;this fine-tuning run
+                consumed 15 kWh over 6 hours.&quot;
               </p>
             </div>
 
-            <div>
-              <div className="text-4xl font-bold text-white mb-6">03</div>
-              <h4 className="text-2xl font-semibold mb-4">Optimize</h4>
-              <p className="text-gray-400 leading-relaxed">
-                Identify inefficient jobs, compare experiment energy costs,
-                and make data-driven decisions about scheduling, hardware selection,
-                and infrastructure capacity.
+            <div className="feature-block">
+              <h3 className="text-2xl font-semibold mb-3">
+                Make smarter decisions with real data
+              </h3>
+              <p className="text-gray-300 text-lg leading-relaxed">
+                Compare training runs, identify inefficient jobs, and make
+                energy-aware scheduling decisions. Reduce waste without
+                sacrificing performance.
               </p>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* BUILT FOR AI */}
+      <section id="built-for-ai" className="relative z-10 px-6 py-24 md:py-32">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-3xl md:text-4xl font-semibold mb-14">
+            Built Specifically for AI Workloads
+          </h2>
+
+          <div className="space-y-8 text-left max-w-3xl mx-auto">
+            {[
+              {
+                highlight: "Energy-first monitoring.",
+                body: "Traditional tools focus on utilization or throughput. We start with power consumption and work backwards to attribution and optimization.",
+              },
+              {
+                highlight: "Designed for ML infrastructure.",
+                body: "Not generic compute monitoring adapted for AI. Built from the ground up to understand training runs, inference workloads, and multi-GPU jobs.",
+              },
+              {
+                highlight: "Attribution at every layer.",
+                body: "From the GPU to the model to the team. Energy usage becomes a first-class metric alongside accuracy, latency, and cost.",
+              },
+            ].map((item) => (
+              <div key={item.highlight} className="flex gap-4 items-start">
+                <div className="text-glow text-xl font-bold mt-0.5">→</div>
+                <p className="text-gray-300 text-lg leading-relaxed">
+                  <span className="font-semibold text-white">
+                    {item.highlight}
+                  </span>{" "}
+                  {item.body}
+                </p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* FREE TRIAL */}
-      <section className="px-6 py-24 md:py-32 bg-gradient-to-br from-purple-900/20 via-neutral-950 to-blue-900/20 border-y border-neutral-800">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-16">
+      <section id="free-trial" className="relative z-10 px-6 py-24 md:py-32 bg-gradient-to-br from-forest/15 via-neutral-950/80 to-blue-900/15 border-y border-forest/20">
+        <div className="max-w-3xl mx-auto text-center">
+          <div className="glass-card p-10 md:p-14">
             <h2 className="text-3xl md:text-4xl font-semibold mb-6">
               Start Monitoring Your GPUs Today
             </h2>
-            <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
-              Try our lightweight GPU monitoring agent free for 30 days.
-              Track energy costs, identify waste, and optimize your infrastructure—all from a real-time dashboard.
+            <p className="text-lg text-gray-300 mb-8 max-w-xl mx-auto leading-relaxed">
+              Try our lightweight GPU monitoring agent free for 30 days. Track
+              energy costs, identify waste, and optimize your
+              infrastructure — all from a real-time dashboard.
             </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8 mb-12">
-            <div className="border border-neutral-800 bg-neutral-950/50 rounded-lg p-6 text-center">
-              <div className="text-3xl mb-4">⚡</div>
-              <h3 className="text-lg font-semibold mb-3">Lightweight</h3>
-              <p className="text-gray-400 text-sm leading-relaxed">
-                Less than 1% CPU overhead and 100MB RAM. Deploy in seconds with a single install script.
-              </p>
-            </div>
-
-            <div className="border border-neutral-800 bg-neutral-950/50 rounded-lg p-6 text-center">
-              <div className="text-3xl mb-4">📊</div>
-              <h3 className="text-lg font-semibold mb-3">Real-Time Dashboard</h3>
-              <p className="text-gray-400 text-sm leading-relaxed">
-                See your GPU energy costs live. Track power draw, utilization, and identify inefficient jobs instantly.
-              </p>
-            </div>
-
-            <div className="border border-neutral-800 bg-neutral-950/50 rounded-lg p-6 text-center">
-              <div className="text-3xl mb-4">🔒</div>
-              <h3 className="text-lg font-semibold mb-3">Your Data</h3>
-              <p className="text-gray-400 text-sm leading-relaxed">
-                Metrics stay in your infrastructure. Full control over retention, access, and privacy.
-              </p>
-            </div>
-          </div>
-
-          <div className="text-center">
             <button
               onClick={() => setIsTrialModalOpen(true)}
-              className="px-8 py-4 bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold rounded-lg hover:from-purple-700 hover:to-blue-700 transition-all text-lg shadow-lg hover:shadow-xl"
+              className="px-8 py-4 bg-gradient-to-r from-forest to-glow text-white font-semibold rounded-lg hover:opacity-90 transition-opacity text-lg shadow-lg shadow-glow/20"
             >
               Start Free Trial
             </button>
-            <p className="mt-4 text-sm text-gray-500">
-              No credit card required • 30-day free trial • Install in under 5 minutes
+            <p className="mt-5 text-sm text-gray-500">
+              No credit card required &middot; 30-day free trial &middot;
+              Install in under 5 minutes
             </p>
-          </div>
-        </div>
-      </section>
-
-      {/* WHY DIFFERENT */}
-      <section className="px-6 py-24 md:py-32 bg-neutral-950 border-y border-neutral-800">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-semibold mb-12">
-            Built Specifically for AI Workloads
-          </h2>
-
-          <div className="space-y-8 text-left max-w-3xl mx-auto">
-            <div className="flex gap-4">
-              <div className="text-white text-xl font-bold">→</div>
-              <div>
-                <p className="text-gray-300 text-lg leading-relaxed">
-                  <span className="font-semibold text-white">Energy-first monitoring.</span> Traditional tools focus on utilization or throughput.
-                  We start with power consumption and work backwards to attribution and optimization.
-                </p>
-              </div>
-            </div>
-
-            <div className="flex gap-4">
-              <div className="text-white text-xl font-bold">→</div>
-              <div>
-                <p className="text-gray-300 text-lg leading-relaxed">
-                  <span className="font-semibold text-white">Designed for ML infrastructure.</span> Not generic compute monitoring adapted for AI.
-                  Built from the ground up to understand training runs, inference workloads, and multi-GPU jobs.
-                </p>
-              </div>
-            </div>
-
-            <div className="flex gap-4">
-              <div className="text-white text-xl font-bold">→</div>
-              <div>
-                <p className="text-gray-300 text-lg leading-relaxed">
-                  <span className="font-semibold text-white">Attribution at every layer.</span> From the GPU to the model to the team.
-                  Energy usage becomes a first-class metric alongside accuracy, latency, and cost.
-                </p>
-              </div>
-            </div>
           </div>
         </div>
       </section>
 
       {/* CLOSING CTA */}
-      <section className="px-6 py-32 md:py-40">
-        <div className="max-w-4xl mx-auto text-center">
+      <section id="closing-cta" className="relative z-10 px-6 py-32 md:py-40 green-wave-bg">
+        <div className="relative z-10 max-w-4xl mx-auto text-center">
           <h2 className="text-4xl md:text-5xl font-bold mb-8 leading-tight">
-            The Future of AI Is Energy-Aware
+            The Future of AI Is{" "}
+            <span className="bg-gradient-to-r from-glow to-blue-400 bg-clip-text text-transparent">
+              Energy-Aware
+            </span>
           </h2>
           <p className="text-xl text-gray-300 mb-12 max-w-2xl mx-auto leading-relaxed">
-            As AI scales, teams that understand and optimize their energy footprint
-            will build faster, cheaper, and more sustainable infrastructure.
+            As AI scales, teams that understand and optimize their energy
+            footprint will build faster, cheaper, and more sustainable
+            infrastructure.
           </p>
 
-          <div>
-            <button
-              onClick={() => setIsModalOpen(true)}
-              className="px-10 py-5 bg-white text-black font-semibold rounded-lg hover:bg-gray-100 transition-colors text-lg"
-            >
-              Get Early Access
-            </button>
-          </div>
+          <button
+            onClick={() => { fireCTA(); setIsModalOpen(true); }}
+            className="px-10 py-5 bg-gradient-to-r from-forest to-glow text-white font-semibold rounded-lg hover:opacity-90 transition-opacity text-lg shadow-lg shadow-glow/20"
+          >
+            Get Early Access
+          </button>
 
           <p className="mt-8 text-gray-500 text-sm">
-            Join ML platform teams and AI infrastructure engineers building the next generation of energy-aware systems.
+            Join ML platform teams and AI infrastructure engineers building the
+            next generation of energy-aware systems.
           </p>
         </div>
       </section>
 
       {/* FOOTER */}
-      <footer className="px-6 py-12 border-t border-neutral-800">
+      <footer className="relative z-10 px-6 py-12 border-t border-forest/30">
         <div className="max-w-6xl mx-auto text-center text-gray-500 text-sm">
-          <p>© {new Date().getFullYear()} AluminatiAI. All rights reserved.</p>
-          <p className="mt-2">AluminatiAI.com</p>
+          <p>
+            &copy; {new Date().getFullYear()} AluminatiAi. All rights reserved.
+          </p>
+          <p className="mt-2">AluminatiAi.com</p>
         </div>
       </footer>
 
-      {/* EMAIL SIGNUP MODAL */}
-      <EmailSignupModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+      {/* NEURAL PATH OVERLAY */}
+      <NeuralPathOverlay />
 
-      {/* TRIAL SIGNUP MODAL */}
-      <TrialSignupModal isOpen={isTrialModalOpen} onClose={() => setIsTrialModalOpen(false)} />
+      {/* MODALS (z-60 to render above neural path overlay) */}
+      <div className="relative z-[60]">
+        <EmailSignupModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+        />
+        <TrialSignupModal
+          isOpen={isTrialModalOpen}
+          onClose={() => setIsTrialModalOpen(false)}
+        />
+      </div>
     </main>
+    </NeuralPathProvider>
   );
 }

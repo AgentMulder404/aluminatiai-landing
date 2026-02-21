@@ -53,7 +53,7 @@ function LoginForm() {
         {/* Header */}
         <div className="text-center mb-8">
           <Link href="/" className="text-2xl font-bold mb-8 inline-block">
-            AluminatiAI
+            AluminatiAi
           </Link>
           <h1 className="text-3xl font-bold mt-6">Welcome Back</h1>
           <p className="text-gray-400 mt-2">

@@ -90,7 +90,7 @@ export async function POST(request: NextRequest) {
     // Extract explanation (text before first code block)
     const explanation = codeMatch
       ? generatedContent.substring(0, codeMatch.index).trim()
-      : "AI-generated integration code for AluminatiAI Energy Tracking API";
+      : "AI-generated integration code for AluminatiAi Energy Tracking API";
 
     return NextResponse.json({
       code,
@@ -122,7 +122,7 @@ export async function POST(request: NextRequest) {
  * System prompt for SDK generation
  */
 function getSystemPrompt(language: string, apiBaseUrl: string): string {
-  return `You are an expert code generator helping AI engineers integrate with AluminatiAI Energy Tracking API.
+  return `You are an expert code generator helping AI engineers integrate with AluminatiAi Energy Tracking API.
 
 Your task: Generate clean, production-ready ${language} code for submitting workload metadata to track energy consumption.
 
@@ -165,7 +165,7 @@ Generate code that:
  * Build user prompt
  */
 function buildSDKPrompt(language: string, apiBaseUrl: string, workloadId?: string): string {
-  let prompt = `Generate a ${language} code snippet for submitting AI workload metadata to the AluminatiAI Energy Tracking API at ${apiBaseUrl}/api/workloads.
+  let prompt = `Generate a ${language} code snippet for submitting AI workload metadata to the AluminatiAi Energy Tracking API at ${apiBaseUrl}/api/workloads.
 
 The code should be simple, production-ready, and include:
 1. A function to submit workload data
@@ -190,7 +190,7 @@ import time
 from typing import Dict, Any, Optional
 
 class AluminatiEnergyTracker:
-    """Track AI workload energy consumption with AluminatiAI"""
+    """Track AI workload energy consumption with AluminatiAi"""
 
     def __init__(self, api_base_url: str = "https://aluminatiai.com"):
         self.api_base_url = api_base_url.rstrip('/')
@@ -273,7 +273,7 @@ if __name__ == "__main__":
     # workload = tracker.get_workload(result['id'])
     # print(f"Status: \${workload['status']}")`,
 
-    javascript: `// AluminatiAI Energy Tracker SDK
+    javascript: `// AluminatiAi Energy Tracker SDK
 const axios = require('axios');
 
 class AluminatiEnergyTracker {
@@ -356,7 +356,7 @@ class AluminatiEnergyTracker {
 module.exports = AluminatiEnergyTracker;`,
 
     curl: `#!/bin/bash
-# AluminatiAI Energy Tracking - Simple curl example
+# AluminatiAi Energy Tracking - Simple curl example
 
 API_URL="https://aluminatiai.com/api/workloads"
 
@@ -401,7 +401,7 @@ function getUsageInstructions(language: string): string {
  */
 export async function GET() {
   return NextResponse.json({
-    service: "AluminatiAI SDK Generator",
+    service: "AluminatiAi SDK Generator",
     powered_by: "MiniMax M2.1",
     supported_languages: ["python", "javascript", "typescript", "curl"],
     usage: "POST with { language: 'python', workload_id?: 'uuid' }",

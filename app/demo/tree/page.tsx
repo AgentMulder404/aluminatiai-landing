@@ -63,7 +63,7 @@ export default function TreeDemoPage() {
       <nav className="sticky top-0 z-50 bg-black/95 backdrop-blur-sm border-b border-neutral-800">
         <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
           <Link href="/" className="text-xl font-bold hover:text-gray-300 transition-colors">
-            ← AluminatiAI
+            ← AluminatiAi
           </Link>
           <div className="flex gap-6 items-center">
             <Link
