@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import EmailSignupModal from "@/components/EmailSignupModal";
 import TrialSignupModal from "@/components/TrialSignupModal";
@@ -8,6 +9,12 @@ import { NeuralPathProvider } from "@/components/neural-path/NeuralPathProvider"
 import NeuralPathOverlay from "@/components/neural-path/NeuralPathOverlay";
 import { TerrainProvider, useTerrainContext } from "@/components/terrain/TerrainProvider";
 import TerrainCanvas from "@/components/terrain/TerrainCanvas";
+
+// Ghost Ledger: dynamically imported, no SSR — canvas APIs require browser
+const GhostLedger = dynamic(
+  () => import("@/components/ghost-ledger/GhostLedger"),
+  { ssr: false }
+);
 
 const gpuLabels = ["A100", "H100", "L40S", "RTX 4090", "V100", "T4"];
 
@@ -27,7 +34,11 @@ function HomeInner() {
   return (
     <NeuralPathProvider>
     <main className="relative min-h-screen bg-black text-white">
+      {/* z-0: 3-D terrain landscape */}
       <TerrainCanvas />
+      {/* z-5: Ghost Ledger — Latin mantras etched into the hills */}
+      <GhostLedger />
+      {/* z-10+: all marketing copy */}
       {/* DEMO BANNER */}
       <div className="relative z-10 bg-gradient-to-r from-forest to-blue-600 px-4 py-3 text-center">
         <p className="text-sm md:text-base font-medium">
