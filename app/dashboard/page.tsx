@@ -4,11 +4,13 @@ import { useEffect, useState } from 'react';
 import TodayCostCard from '@/components/dashboard/TodayCostCard';
 import JobsTable from '@/components/dashboard/JobsTable';
 import UtilizationChart from '@/components/dashboard/UtilizationChart';
+import StatCard from '@/components/dashboard/StatCard';
 
 export default function DashboardPage() {
   const [todayCost, setTodayCost] = useState<any>(null);
   const [jobs, setJobs] = useState<any[]>([]);
   const [chartData, setChartData] = useState<any[]>([]);
+  const [chartSummary, setChartSummary] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -39,6 +41,7 @@ export default function DashboardPage() {
       setTodayCost(costData);
       setJobs(jobsData.jobs || []);
       setChartData(chartResData.data || []);
+      setChartSummary(chartResData.summary || null);
     } catch (error) {
       console.error('Failed to load dashboard:', error);
       setError('Failed to load dashboard data. Please refresh the page.');
@@ -70,6 +73,33 @@ export default function DashboardPage() {
           <p className="text-red-300">{error}</p>
         </div>
       )}
+
+      {/* KPI Row */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <StatCard
+          label="Today's Cost"
+          value={todayCost ? `$${todayCost.cost_usd.toFixed(2)}` : '--'}
+          accent="green"
+          loading={loading}
+        />
+        <StatCard
+          label="Total kWh"
+          value={todayCost ? `${todayCost.energy_kwh.toFixed(3)}` : '--'}
+          accent="purple"
+          loading={loading}
+        />
+        <StatCard
+          label="Active GPUs"
+          value={chartSummary ? `${chartSummary.gpu_count}` : '--'}
+          accent="blue"
+          loading={loading}
+        />
+        <StatCard
+          label="Avg Utilization"
+          value={chartSummary ? `${chartSummary.avg_utilization_pct}%` : '--'}
+          loading={loading}
+        />
+      </div>
 
       {/* View 1: Today's Cost */}
       <TodayCostCard data={todayCost} loading={loading} />

@@ -5,7 +5,7 @@
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 -- Create workloads table
-CREATE TABLE IF NOT EXISTS workloads (
+CREATE TABLE IF NOT EXISTS wdorkloads (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
   user_id UUID,
