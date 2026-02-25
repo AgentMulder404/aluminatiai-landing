@@ -1,14 +1,23 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { resetPassword } from "@/lib/auth-helpers";
 
-export default function ForgotPasswordPage() {
+function ForgotPasswordForm() {
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [sent, setSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showExpiredBanner, setShowExpiredBanner] = useState(false);
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    if (searchParams.get("error") === "link_expired") {
+      setShowExpiredBanner(true);
+    }
+  }, [searchParams]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,6 +52,14 @@ export default function ForgotPasswordPage() {
 
         {/* Card */}
         <div className="border border-neutral-800 bg-neutral-950 rounded-lg p-8">
+          {showExpiredBanner && (
+            <div className="mb-6 bg-red-900/30 border border-red-700 rounded-lg p-4">
+              <p className="text-red-300 text-sm font-medium">That reset link has expired.</p>
+              <p className="text-red-400/70 text-sm mt-1">
+                Enter your email below to receive a fresh one.
+              </p>
+            </div>
+          )}
           {sent ? (
             <div className="text-center space-y-4">
               <div className="bg-green-900/30 border border-green-700 rounded-lg p-4">
@@ -103,5 +120,19 @@ export default function ForgotPasswordPage() {
         </div>
       </div>
     </main>
+  );
+}
+
+export default function ForgotPasswordPage() {
+  return (
+    <Suspense
+      fallback={
+        <main className="min-h-screen bg-black text-white flex items-center justify-center p-4">
+          <div className="animate-spin rounded-full h-12 w-12 border-4 border-neutral-700 border-t-purple-600"></div>
+        </main>
+      }
+    >
+      <ForgotPasswordForm />
+    </Suspense>
   );
 }

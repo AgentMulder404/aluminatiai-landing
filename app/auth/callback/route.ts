@@ -4,8 +4,20 @@ import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
-  const code = searchParams.get("code");
-  const next = searchParams.get("next");
+  const code  = searchParams.get("code");
+  const next  = searchParams.get("next");
+  const error = searchParams.get("error");
+
+  // Supabase sends ?error= (no code) when a link is expired or invalid.
+  // Route to the right recovery page instead of a silent 401.
+  if (error && !code) {
+    if (next && next.startsWith("/") && !next.includes("://")) {
+      // e.g. password reset link expired → back to forgot-password
+      return NextResponse.redirect(`${origin}/forgot-password?error=link_expired`);
+    }
+    // Email confirmation link expired → check-email with expired flag
+    return NextResponse.redirect(`${origin}/check-email?error=expired`);
+  }
 
   if (code) {
     const cookieStore = await cookies();

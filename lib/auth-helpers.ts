@@ -80,6 +80,21 @@ export async function updatePassword(newPassword: string) {
 }
 
 /**
+ * Resend email confirmation link
+ */
+export async function resendConfirmation(email: string) {
+  const { data, error } = await supabaseClient.auth.resend({
+    type: 'signup',
+    email,
+    options: {
+      emailRedirectTo: `${window.location.origin}/auth/callback`,
+    },
+  });
+
+  return { data, error };
+}
+
+/**
  * Update user metadata
  */
 export async function updateUser(updates: { full_name?: string; company?: string }) {
