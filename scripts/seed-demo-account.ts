@@ -20,6 +20,17 @@
 
 import { createClient } from "@supabase/supabase-js";
 import { generateSeedData } from "../lib/demo-seed";
+import { webcrypto } from "crypto";
+
+// Mirrors the SQL generate_api_key() function from migration 005
+function generateApiKey(): string {
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789";
+  const bytes = new Uint8Array(59);
+  (webcrypto as Crypto).getRandomValues(bytes);
+  let key = "alum_";
+  for (const byte of bytes) key += chars[byte % chars.length];
+  return key;
+}
 
 // ── Load env ──────────────────────────────────────────────────────────────────
 const SUPABASE_URL      = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -95,23 +106,33 @@ async function main() {
   }
 
   // ── Step 2: Ensure users profile row exists ───────────────────────────
-  // The DB trigger fires on auth.users insert, but may not fire for admin
-  // creates. Upsert manually to be safe.
+  // Admin-created auth users don't always trigger the DB trigger, so we
+  // ensure the row exists manually. api_key is NOT NULL, so we generate
+  // one here and only insert it when the row is missing.
   console.log("Ensuring user profile...");
-  const { error: profileError } = await service
-    .from("users")
-    .upsert(
-      {
-        id:              userId,
-        email:           DEMO_EMAIL,
-        trial_started_at: new Date().toISOString(),
-        trial_ends_at:    new Date(Date.now() + 365 * 24 * 3600 * 1000).toISOString(), // 1 year
-        electricity_rate_per_kwh: 0.12,
-      },
-      { onConflict: "id", ignoreDuplicates: false }
-    );
-  if (profileError) {
-    console.warn("  Profile upsert warning (may already exist):", profileError.message);
+  const trialStart = new Date().toISOString();
+  const trialEnd   = new Date(Date.now() + 365 * 24 * 3600 * 1000).toISOString();
+
+  // Insert only if missing (ignore conflict = keep existing api_key intact)
+  await service.from("users").insert({
+    id:                       userId,
+    email:                    DEMO_EMAIL,
+    api_key:                  generateApiKey(),
+    trial_started_at:         trialStart,
+    trial_ends_at:            trialEnd,
+    electricity_rate_per_kwh: 0.12,
+  }).select().maybeSingle(); // error means row exists — that's fine
+
+  // Always refresh trial window + rate (safe: never touches api_key)
+  const { error: updateError } = await service.from("users").update({
+    email:                    DEMO_EMAIL,
+    trial_started_at:         trialStart,
+    trial_ends_at:            trialEnd,
+    electricity_rate_per_kwh: 0.12,
+  }).eq("id", userId);
+
+  if (updateError) {
+    console.warn("  Profile update warning:", updateError.message);
   } else {
     console.log("  ✓ Profile ready");
   }
