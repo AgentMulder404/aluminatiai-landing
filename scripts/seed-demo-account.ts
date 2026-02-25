@@ -47,17 +47,12 @@ function chunk<T>(arr: T[], size: number): T[][] {
 }
 
 async function bulkInsert<T extends object>(table: string, rows: T[]) {
-  const batches = chunk(rows, 500);
+  const batches = chunk(rows, 200);
   let total = 0;
-  for (let i = 0; i < batches.length; i += 4) {
-    const window = batches.slice(i, i + 4);
-    await Promise.all(
-      window.map(async (batch) => {
-        const { error } = await service.from(table).insert(batch);
-        if (error) throw new Error(`${table}: ${error.message}`);
-        total += batch.length;
-      })
-    );
+  for (const batch of batches) {
+    const { error } = await service.from(table).insert(batch);
+    if (error) throw new Error(`${table}: ${error.message}`);
+    total += batch.length;
     process.stdout.write(`  ${table}: ${total}/${rows.length} rows\r`);
   }
   console.log(`  ✓ ${table}: ${total} rows inserted`);
