@@ -11,6 +11,7 @@ const navLinks = [
   { href: '/dashboard/manifests', label: 'Manifests', exact: false },
   { href: '/dashboard/hardware', label: 'Hardware', exact: false },
   { href: '/dashboard/fleet', label: 'Fleet', exact: false },
+  { href: '/dashboard/advisor', label: 'Advisor', exact: false },
   { href: '/dashboard/setup', label: 'Setup', exact: false },
 ];
 
