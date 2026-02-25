@@ -46,14 +46,17 @@ function chunk<T>(arr: T[], size: number): T[][] {
   return out;
 }
 
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
 async function bulkInsert<T extends object>(table: string, rows: T[]) {
-  const batches = chunk(rows, 200);
+  const batches = chunk(rows, 50);
   let total = 0;
   for (const batch of batches) {
     const { error } = await service.from(table).insert(batch);
     if (error) throw new Error(`${table}: ${error.message}`);
     total += batch.length;
     process.stdout.write(`  ${table}: ${total}/${rows.length} rows\r`);
+    await sleep(100); // brief pause to avoid Supabase connection drops
   }
   console.log(`  ✓ ${table}: ${total} rows inserted`);
 }
