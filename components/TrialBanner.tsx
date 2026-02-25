@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 
 type TrialState = "loading" | "hidden" | "ok" | "warning" | "expired";
 
@@ -36,19 +37,16 @@ export default function TrialBanner() {
 
   if (state === "loading" || state === "hidden") return null;
 
-  const upgradeHref =
-    "mailto:contact@aluminatiai.com?subject=Upgrade%20AluminatiAi%20Trial&body=Hi%2C%20I%27d%20like%20to%20upgrade%20my%20AluminatiAi%20account.";
-
   if (state === "expired") {
     return (
       <div className="border-b border-red-800 bg-red-950/80 py-2 px-6 flex items-center justify-center gap-4 text-sm">
         <span className="text-red-200 font-medium">Your free trial has expired.</span>
-        <a
-          href={upgradeHref}
+        <Link
+          href="/contact?source=trial_expired"
           className="text-white font-semibold underline underline-offset-2 hover:text-red-200 transition-colors"
         >
           Contact us to continue →
-        </a>
+        </Link>
       </div>
     );
   }
@@ -60,12 +58,12 @@ export default function TrialBanner() {
           Your trial expires in{" "}
           <span className="font-semibold">{daysRemaining} {daysRemaining === 1 ? "day" : "days"}</span>.
         </span>
-        <a
-          href={upgradeHref}
+        <Link
+          href="/contact?source=trial_warning"
           className="text-red-200 font-semibold underline underline-offset-2 hover:text-white transition-colors"
         >
           Contact us to upgrade →
-        </a>
+        </Link>
       </div>
     );
   }
@@ -77,12 +75,12 @@ export default function TrialBanner() {
         Your free trial ends in{" "}
         <span className="text-gray-300 font-medium">{daysRemaining} days</span>.
       </span>
-      <a
-        href={upgradeHref}
+      <Link
+        href="/contact?source=trial_banner"
         className="text-gray-400 hover:text-white transition-colors underline underline-offset-2"
       >
         Contact us to upgrade →
-      </a>
+      </Link>
     </div>
   );
 }
