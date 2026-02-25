@@ -4,5 +4,15 @@
       "source": "/api/:path*",
       "destination": "https://aluminatai-scheduler-api.onrender.com/api/:path*"
     }
+  ],
+  "crons": [
+    {
+      "path": "/api/cron/generate-manifests",
+      "schedule": "*/10 * * * *"
+    },
+    {
+      "path": "/api/cron/refresh-metrics",
+      "schedule": "0 * * * *"
+    }
   ]
 }
