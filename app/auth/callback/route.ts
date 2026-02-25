@@ -5,6 +5,7 @@ import { NextResponse } from "next/server";
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
+  const next = searchParams.get("next");
 
   if (code) {
     const cookieStore = await cookies();
@@ -32,7 +33,13 @@ export async function GET(request: Request) {
     const { error } = await supabase.auth.exchangeCodeForSession(code);
 
     if (!error) {
-      // Smart redirect: check if the user already has jobs (returning) or not (new)
+      // If a specific destination was requested (e.g. /reset-password), go there.
+      // Sanitize: only allow internal paths (starts with /, no protocol).
+      if (next && next.startsWith("/") && !next.includes("://")) {
+        return NextResponse.redirect(`${origin}${next}`);
+      }
+
+      // Default smart redirect: new users → setup, returning users → dashboard
       const { data: jobs } = await supabase
         .from("gpu_jobs")
         .select("id")

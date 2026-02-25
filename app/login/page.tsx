@@ -15,10 +15,12 @@ function LoginForm() {
   const searchParams = useSearchParams();
 
   useEffect(() => {
-    // Check if user just confirmed their email
     const confirmed = searchParams.get('confirmed');
+    const message   = searchParams.get('message');
     if (confirmed === 'true') {
       setSuccessMessage('Email confirmed! Please sign in to continue.');
+    } else if (message === 'password_updated') {
+      setSuccessMessage('Password updated! Please sign in with your new password.');
     }
   }, [searchParams]);
 
@@ -87,9 +89,14 @@ function LoginForm() {
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-2">
-                Password
-              </label>
+              <div className="flex justify-between items-center mb-2">
+                <label htmlFor="password" className="block text-sm font-medium text-gray-300">
+                  Password
+                </label>
+                <Link href="/forgot-password" className="text-xs text-gray-500 hover:text-gray-300 transition-colors">
+                  Forgot password?
+                </Link>
+              </div>
               <input
                 type="password"
                 id="password"
