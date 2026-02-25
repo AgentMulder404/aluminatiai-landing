@@ -48,28 +48,24 @@ export interface GpuMetricRow {
   fan_speed_pct: number;
   memory_used_mb: number;
   memory_total_mb: number;
-  sm_clock_mhz: number;
+  clock_sm_mhz: number;
   job_id: string;
-  team_id: string;
-  model_tag: string;
-  scheduler_source: string;
 }
 
 export interface GpuJobRow {
   id: string;
   user_id: string;
   job_name: string;
-  job_command: string;
   gpu_indices: number[];
+  num_gpus: number;
   start_time: string;
   end_time: string | null;
+  is_active: boolean;
   total_energy_kwh: number;
   total_cost_usd: number;
+  avg_power_w: number;
   avg_utilization_pct: number;
   duration_seconds: number | null;
-  team_id: string;
-  model_tag: string;
-  scheduler_source: string;
 }
 
 export interface EnergyManifestRow {
@@ -112,7 +108,6 @@ const CARBON_INTENSITY  = 386;  // g CO₂/kWh — US grid average (EPA 2024)
 interface JobDef {
   id: string;
   name: string;
-  command: string;
   gpuArch: string;
   gpuName: string;
   gpuCount: number;
@@ -134,10 +129,8 @@ interface JobDef {
 
 const JOB_DEFS: JobDef[] = [
   {
-    id: "job-llama3-finetune-001",
+    id: "a1b2c3d4-0001-4000-8001-000000000001",
     name: "llama3-finetune",
-    command:
-      "torchrun --nproc_per_node=8 train.py --model meta-llama/Llama-3-70B --batch-size 32 --epochs 3",
     gpuArch: "A100 80GB SXM",
     gpuName: "NVIDIA A100-SXM4-80GB",
     gpuCount: 8,
@@ -157,10 +150,8 @@ const JOB_DEFS: JobDef[] = [
     efficiencyPercentile: 91,
   },
   {
-    id: "job-inference-serving-001",
+    id: "a1b2c3d4-0002-4000-8002-000000000002",
     name: "inference-serving",
-    command:
-      "python serve.py --model meta-llama/Llama-3-8B --port 8080 --workers 4 --max-batch 32",
     gpuArch: "H100 SXM",
     gpuName: "NVIDIA H100 SXM5 80GB",
     gpuCount: 4,
@@ -180,10 +171,8 @@ const JOB_DEFS: JobDef[] = [
     efficiencyPercentile: 78,
   },
   {
-    id: "job-sdxl-batch-001",
+    id: "a1b2c3d4-0003-4000-8003-000000000003",
     name: "sdxl-batch-render",
-    command:
-      "python batch_render.py --model stabilityai/sdxl-turbo --images 50000 --steps 4 --out /data/renders/",
     gpuArch: "L40S",
     gpuName: "NVIDIA L40S",
     gpuCount: 2,
@@ -203,10 +192,8 @@ const JOB_DEFS: JobDef[] = [
     efficiencyPercentile: 64,
   },
   {
-    id: "job-bert-eval-001",
+    id: "a1b2c3d4-0004-4000-8004-000000000004",
     name: "bert-eval-v3",
-    command:
-      "python eval.py --model bert-large-uncased --dataset squad2 --gpus 4 --batch-size 64",
     gpuArch: "A100 40GB PCIe",
     gpuName: "NVIDIA A100-PCIE-40GB",
     gpuCount: 4,
@@ -227,10 +214,8 @@ const JOB_DEFS: JobDef[] = [
   },
   {
     // THE WASTE STORY: 4× A100s, idle for 7 days, nobody noticed
-    id: "job-data-preproc-abandoned",
+    id: "a1b2c3d4-0005-4000-8005-000000000005",
     name: "data-preproc-abandoned",
-    command:
-      "python preprocess.py --input /data/raw/2024-q4 --output /data/processed/ --workers 16",
     gpuArch: "A100 40GB PCIe",
     gpuName: "NVIDIA A100-PCIE-40GB",
     gpuCount: 4,
@@ -369,11 +354,8 @@ function generateJobMetrics(
         fan_speed_pct:           fanPct,
         memory_used_mb:          memUsedMb,
         memory_total_mb:         def.memoryTotalMb,
-        sm_clock_mhz:            smClock,
+        clock_sm_mhz:            smClock,
         job_id:                  def.id,
-        team_id:                 def.teamId,
-        model_tag:               def.modelTag,
-        scheduler_source:        def.schedulerSource,
       });
     }
   }
@@ -416,21 +398,24 @@ export function generateSeedData(userId: string): SeedOutput {
       : 0;
     const durationSeconds = def.durationH ? def.durationH * 3600 : null;
 
+    const avgPowerW = stats.sampleCount > 0
+      ? Math.round((stats.totalEnergyJ / (durationSeconds ?? (now.getTime() - startTime.getTime()) / 1000)) * 10) / 10
+      : 0;
+
     jobs.push({
       id:                  def.id,
       user_id:             userId,
       job_name:            def.name,
-      job_command:         def.command,
       gpu_indices:         Array.from({ length: def.gpuCount }, (_, i) => i),
+      num_gpus:            def.gpuCount,
+      is_active:           def.durationH === null,
       start_time:          startTime.toISOString(),
       end_time:            endTime?.toISOString() ?? null,
       total_energy_kwh:    Math.round(totalKwh    * 10000) / 10000,
       total_cost_usd:      Math.round(costUsd     * 10000) / 10000,
+      avg_power_w:         avgPowerW,
       avg_utilization_pct: Math.round(avgUtilPct  * 10)    / 10,
       duration_seconds:    durationSeconds,
-      team_id:             def.teamId,
-      model_tag:           def.modelTag,
-      scheduler_source:    def.schedulerSource,
     });
 
     // Only completed jobs get an energy manifest

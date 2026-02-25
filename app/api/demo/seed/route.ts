@@ -71,11 +71,11 @@ export async function POST(req: NextRequest) {
     // Only remove rows that belong to our known demo job IDs so we don't
     // nuke real user data on re-seed.
     const DEMO_JOB_IDS = [
-      "job-llama3-finetune-001",
-      "job-inference-serving-001",
-      "job-sdxl-batch-001",
-      "job-bert-eval-001",
-      "job-data-preproc-abandoned",
+      "a1b2c3d4-0001-4000-8001-000000000001",
+      "a1b2c3d4-0002-4000-8002-000000000002",
+      "a1b2c3d4-0003-4000-8003-000000000003",
+      "a1b2c3d4-0004-4000-8004-000000000004",
+      "a1b2c3d4-0005-4000-8005-000000000005",
     ];
 
     await Promise.all([

@@ -106,8 +106,8 @@ async function main() {
       {
         id:              userId,
         email:           DEMO_EMAIL,
-        trial_start_date: new Date().toISOString(),
-        trial_end_date:   new Date(Date.now() + 365 * 24 * 3600 * 1000).toISOString(), // 1 year
+        trial_started_at: new Date().toISOString(),
+        trial_ends_at:    new Date(Date.now() + 365 * 24 * 3600 * 1000).toISOString(), // 1 year
         electricity_rate_per_kwh: 0.12,
       },
       { onConflict: "id", ignoreDuplicates: false }
@@ -121,11 +121,11 @@ async function main() {
   // ── Step 3: Clear old demo data ───────────────────────────────────────
   console.log("Clearing existing demo data...");
   const DEMO_JOB_IDS = [
-    "job-llama3-finetune-001",
-    "job-inference-serving-001",
-    "job-sdxl-batch-001",
-    "job-bert-eval-001",
-    "job-data-preproc-abandoned",
+    "a1b2c3d4-0001-4000-8001-000000000001",
+    "a1b2c3d4-0002-4000-8002-000000000002",
+    "a1b2c3d4-0003-4000-8003-000000000003",
+    "a1b2c3d4-0004-4000-8004-000000000004",
+    "a1b2c3d4-0005-4000-8005-000000000005",
   ];
   await Promise.all([
     service.from("gpu_metrics").delete().eq("user_id", userId).in("job_id", DEMO_JOB_IDS),
@@ -144,7 +144,14 @@ async function main() {
   console.log("\nInserting...");
   await bulkInsert("gpu_jobs", jobs);
   await bulkInsert("gpu_metrics", metrics);
-  await bulkInsert("energy_manifests", manifests);
+  // energy_manifests requires migration 006 — non-fatal if table doesn't exist yet
+  if (manifests.length > 0) {
+    try {
+      await bulkInsert("energy_manifests", manifests);
+    } catch (err) {
+      console.warn("  ⚠  energy_manifests skipped (migration 006 may not be applied):", (err as Error).message);
+    }
+  }
 
   // ── Step 5: Refresh materialized view ────────────────────────────────
   console.log("Refreshing materialized view...");

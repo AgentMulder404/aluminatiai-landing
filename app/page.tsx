@@ -99,7 +99,7 @@ function HomeInner() {
         {/* Gradient background */}
         <div className="absolute inset-0 bg-gradient-to-br from-black via-forest/20 to-blue-900/20 pointer-events-none" />
         {/* Watermark */}
-        <div className="watermark">AluminatAi</div>
+        <div className="watermark">AluminatiAi</div>
 
         <div className="relative z-10 max-w-6xl mx-auto">
           <div className="text-center mb-16">
