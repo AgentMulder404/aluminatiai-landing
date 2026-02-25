@@ -37,8 +37,15 @@ function LoginForm() {
       }
 
       if (data.user) {
-        // Successfully signed in, redirect to dashboard
-        router.push("/dashboard");
+        // Smart redirect: new users go to setup, returning users go to dashboard
+        try {
+          const res = await fetch("/api/dashboard/jobs?limit=1");
+          const jobData = await res.json();
+          const hasJobs = res.ok && (jobData.jobs?.length ?? 0) > 0;
+          router.push(hasJobs ? "/dashboard" : "/dashboard/setup");
+        } catch {
+          router.push("/dashboard");
+        }
       }
     } catch (err) {
       console.error("Error signing in:", err);
