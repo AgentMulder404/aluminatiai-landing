@@ -5,6 +5,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import Link from 'next/link';
 import { signOut } from '@/lib/auth-helpers';
+import TrialBanner from '@/components/TrialBanner';
 
 const navLinks = [
   { href: '/dashboard', label: 'Overview', exact: true },
@@ -80,6 +81,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </div>
         </div>
       </nav>
+
+      {/* Trial status banner */}
+      <TrialBanner />
 
       {/* Content */}
       <main className="max-w-7xl mx-auto px-6 py-8">
