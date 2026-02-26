@@ -1,43 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
-
-type TrialState = "loading" | "hidden" | "ok" | "warning" | "expired";
-
-interface ProfileData {
-  trial_days_remaining: number;
-  is_trial_active: boolean;
-}
+import { useTrialContext } from "@/contexts/TrialContext";
 
 export default function TrialBanner() {
-  const [state, setState] = useState<TrialState>("loading");
-  const [daysRemaining, setDaysRemaining] = useState(0);
+  const { isTrialActive, daysRemaining, loading } = useTrialContext();
 
-  useEffect(() => {
-    fetch("/api/user/profile")
-      .then((res) => res.json())
-      .then((data: { profile?: ProfileData }) => {
-        const profile = data.profile;
-        if (!profile) { setState("hidden"); return; }
+  if (loading) return null;
 
-        const days = profile.trial_days_remaining;
-        setDaysRemaining(days);
-
-        if (!profile.is_trial_active) {
-          setState("expired");
-        } else if (days <= 5) {
-          setState("warning");
-        } else {
-          setState("ok");
-        }
-      })
-      .catch(() => setState("hidden"));
-  }, []);
-
-  if (state === "loading" || state === "hidden") return null;
-
-  if (state === "expired") {
+  if (!isTrialActive) {
     return (
       <div className="border-b border-red-800 bg-red-950/80 py-2 px-6 flex items-center justify-center gap-4 text-sm">
         <span className="text-red-200 font-medium">Your free trial has expired.</span>
@@ -51,7 +22,7 @@ export default function TrialBanner() {
     );
   }
 
-  if (state === "warning") {
+  if (daysRemaining <= 5) {
     return (
       <div className="border-b border-red-900/50 bg-red-950/60 py-2 px-6 flex items-center justify-center gap-4 text-sm">
         <span className="text-red-300">
@@ -68,7 +39,6 @@ export default function TrialBanner() {
     );
   }
 
-  // state === "ok"
   return (
     <div className="border-b border-neutral-800 bg-neutral-900 py-2 px-6 flex items-center justify-center gap-4 text-sm">
       <span className="text-gray-400">

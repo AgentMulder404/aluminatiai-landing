@@ -6,6 +6,8 @@ import { useAuth } from '@/contexts/AuthContext';
 import Link from 'next/link';
 import { signOut } from '@/lib/auth-helpers';
 import TrialBanner from '@/components/TrialBanner';
+import TrialGate from '@/components/TrialGate';
+import { TrialProvider } from '@/contexts/TrialContext';
 
 const navLinks = [
   { href: '/dashboard', label: 'Overview', exact: true },
@@ -48,6 +50,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   }
 
   return (
+    <TrialProvider>
     <div className="min-h-screen bg-black text-white">
       {/* Navigation */}
       <nav className="border-b border-neutral-800 bg-neutral-950">
@@ -87,8 +90,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
       {/* Content */}
       <main className="max-w-7xl mx-auto px-6 py-8">
-        {children}
+        <TrialGate>{children}</TrialGate>
       </main>
     </div>
+    </TrialProvider>
   );
 }
