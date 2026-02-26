@@ -138,7 +138,7 @@ WantedBy=multi-user.target`;
               </p>
               <div className="mt-4 flex flex-wrap gap-3 text-sm">
                 <span className="px-3 py-1 rounded-full border border-neutral-700 text-gray-400 font-mono">Python 3.8+</span>
-                <span className="px-3 py-1 rounded-full border border-neutral-700 text-gray-400 font-mono">Linux / macOS</span>
+                <span className="px-3 py-1 rounded-full border border-neutral-700 text-gray-400 font-mono">Linux · macOS · Windows</span>
                 <span className="px-3 py-1 rounded-full border border-neutral-700 text-gray-400 font-mono">NVIDIA GPU required</span>
               </div>
             </div>
@@ -183,6 +183,10 @@ pip install -r requirements.txt
 
 # Verify GPU detection
 python collector.py`} />
+              <Note>
+                <strong className="text-gray-300">Windows:</strong> use <Code>python</Code> and <Code>pip</Code> instead of <Code>python3</Code>/<Code>pip3</Code>.
+                Run commands in PowerShell or Command Prompt (not WSL) so Python can access the NVIDIA drivers directly.
+              </Note>
               <p className="text-gray-400 text-sm">Dependencies:</p>
               <Table
                 headers={["Package", "Version", "Purpose"]}
@@ -284,6 +288,31 @@ sudo journalctl -u aluminatai-agent -f`} />
                 Update <Code>User=</Code> and <Code>WorkingDirectory=</Code> to match your setup.
                 The agent will automatically restart on failure and start on reboot.
               </Note>
+
+              <h3 className="text-sm font-semibold text-gray-300 uppercase tracking-wide">Option C — Windows (PowerShell + Task Scheduler)</h3>
+              <p className="text-gray-400 text-sm">
+                Use the included <Code>start.bat</Code> launcher, or run directly from PowerShell:
+              </p>
+              <CodeBlock code={`# Option 1 — start.bat launcher (simplest)
+start.bat alum_YOUR_KEY_HERE
+
+# Option 2 — PowerShell background job
+$env:ALUMINATAI_API_KEY = "alum_YOUR_KEY_HERE"
+Start-Process python -ArgumentList "main.py","--quiet" -WindowStyle Hidden
+
+# Option 3 — Windows Task Scheduler (survives reboots)
+# 1. Open Task Scheduler → Create Basic Task
+# 2. Trigger: "When the computer starts"
+# 3. Action: Start a program
+#    Program:   python
+#    Arguments: C:\\path\\to\\agent\\main.py --quiet
+#    Start in:  C:\\path\\to\\agent
+# 4. Add env var in Properties → Environment Variables:
+#    ALUMINATAI_API_KEY = alum_YOUR_KEY_HERE`} />
+              <Note>
+                <strong className="text-gray-300">WSL note:</strong> do NOT run the agent inside WSL —
+                WSL cannot access NVIDIA NVML directly. Run Python natively in PowerShell or Command Prompt.
+              </Note>
             </Section>
 
             {/* Scheduler integration */}
@@ -359,6 +388,20 @@ LOG_LEVEL=DEBUG python main.py
 
 # Check saved backup if uploads are failing
 ls data/`} />
+                </div>
+
+                <div className="rounded-lg border border-neutral-800 bg-neutral-950 p-5 space-y-3">
+                  <p className="font-semibold text-white">Windows: "No module named pynvml" or GPU not detected</p>
+                  <p className="text-sm text-gray-400">
+                    Make sure you are running in native PowerShell or Command Prompt — not WSL. NVML is not accessible from inside WSL.
+                  </p>
+                  <CodeBlock code={`# In PowerShell (not WSL):
+pip install -r requirements.txt
+python collector.py
+
+# Set env var for the session
+$env:ALUMINATAI_API_KEY = "alum_YOUR_KEY_HERE"
+python main.py`} />
                 </div>
               </div>
             </Section>

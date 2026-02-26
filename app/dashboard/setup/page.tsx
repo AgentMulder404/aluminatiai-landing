@@ -323,8 +323,14 @@ export default function SetupPage() {
           <div>
             <p className="font-medium text-white">Windows</p>
             <p className="mt-1">
-              Use <code className="text-purple-400">set ALUMINATAI_API_KEY={apiKey || "<your-key>"}</code>{" "}
-              then <code className="text-purple-400">python main.py</code> separately.
+              Run in PowerShell or Command Prompt — not WSL. Set the key then start the agent:
+            </p>
+            <p className="mt-2 font-mono text-xs text-gray-500 bg-black border border-neutral-800 rounded px-3 py-2 leading-relaxed">
+              <span className="text-purple-400">$env:ALUMINATAI_API_KEY</span> = &quot;{apiKey || "alum_YOUR_KEY_HERE"}&quot;<br />
+              <span className="text-purple-400">python main.py</span>
+            </p>
+            <p className="mt-1 text-xs text-gray-600">
+              Or use <code className="text-purple-400">start.bat {apiKey || "alum_YOUR_KEY_HERE"}</code> from the agent directory.
             </p>
           </div>
         </div>
