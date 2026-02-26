@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 // ── Copy button ───────────────────────────────────────────────────────────────
 
@@ -326,6 +327,14 @@ export default function SetupPage() {
               then <code className="text-purple-400">python main.py</code> separately.
             </p>
           </div>
+        </div>
+        <div className="mt-5 pt-4 border-t border-neutral-800">
+          <Link
+            href="/docs/agent"
+            className="text-sm text-purple-400 hover:text-purple-300 transition-colors underline underline-offset-2"
+          >
+            Full agent docs: CLI flags, env vars, systemd setup, scheduler integration →
+          </Link>
         </div>
       </div>
     </div>

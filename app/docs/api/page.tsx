@@ -128,6 +128,9 @@ export default function ApiDocsPage() {
             AluminatiAi
           </Link>
           <div className="flex items-center gap-6 text-sm">
+            <Link href="/docs/agent" className="text-gray-400 hover:text-white transition-colors">
+              Agent docs
+            </Link>
             <Link href="/dashboard/setup" className="text-gray-400 hover:text-white transition-colors">
               Setup guide
             </Link>
@@ -298,6 +301,7 @@ export default function ApiDocsPage() {
         <div className="border-t border-neutral-800 pt-8 flex items-center justify-between text-sm text-gray-500">
           <span>AluminatiAi API · v1</span>
           <div className="flex items-center gap-6">
+            <Link href="/docs/agent" className="hover:text-white transition-colors">Agent docs</Link>
             <Link href="/dashboard/setup" className="hover:text-white transition-colors">Setup guide</Link>
             <Link href="/contact" className="hover:text-white transition-colors">Contact us</Link>
             <Link href="/dashboard" className="hover:text-white transition-colors">Dashboard</Link>
