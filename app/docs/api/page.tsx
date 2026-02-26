@@ -95,7 +95,7 @@ export default function ApiDocsPage() {
   }
 ]`;
 
-  const curlExample = `curl -X POST https://aluminatiai-landing.vercel.app/api/metrics/ingest \\
+  const curlExample = `curl -X POST https://aluminatiai.com/api/metrics/ingest \\
   -H "Content-Type: application/json" \\
   -H "X-API-Key: alum_YOUR_KEY_HERE" \\
   -d '[{
@@ -156,7 +156,7 @@ export default function ApiDocsPage() {
             cost attribution, and efficiency analysis.
           </p>
           <div className="mt-4 flex items-center gap-3">
-            <Badge label="Base URL: https://aluminatiai-landing.vercel.app" color="gray" />
+            <Badge label="Base URL: https://aluminatiai.com" color="gray" />
           </div>
         </div>
 
@@ -261,13 +261,13 @@ export default function ApiDocsPage() {
           <p className="text-gray-400 text-sm">
             Health check. No authentication required. Returns endpoint metadata.
           </p>
-          <CodeBlock code={`curl https://aluminatiai-landing.vercel.app/api/metrics/ingest`} />
+          <CodeBlock code={`curl https://aluminatiai.com/api/metrics/ingest`} />
           <CodeBlock
             code={`{
   "status": "ok",
   "endpoint": "GPU Metrics Ingestion API",
   "methods": ["POST"],
-  "documentation": "https://aluminatiai-landing.vercel.app/docs/api"
+  "documentation": "https://aluminatiai.com/docs/api"
 }`}
             language="json"
           />
