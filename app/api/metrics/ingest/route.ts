@@ -294,6 +294,6 @@ export async function GET() {
     status: 'ok',
     endpoint: 'GPU Metrics Ingestion API',
     methods: ['POST'],
-    documentation: 'https://aluminatai.com/docs/api/metrics',
+    documentation: 'https://aluminatiai-landing.vercel.app/docs/api',
   });
 }
