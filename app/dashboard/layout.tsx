@@ -16,6 +16,7 @@ const navLinks = [
   { href: '/dashboard/fleet', label: 'Fleet', exact: false },
   { href: '/dashboard/advisor', label: 'Advisor', exact: false },
   { href: '/dashboard/setup', label: 'Setup', exact: false },
+  { href: '/dashboard/settings', label: 'Settings', exact: false },
 ];
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
