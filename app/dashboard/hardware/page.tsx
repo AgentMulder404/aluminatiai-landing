@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from 'react';
 import HardwareComparisonTable from '@/components/dashboard/HardwareComparisonTable';
 import EfficiencyCurveChart from '@/components/dashboard/EfficiencyCurveChart';
 import LoadingCard from '@/components/dashboard/LoadingCard';
+import EmptyState from '@/components/dashboard/EmptyState';
 
 export default function HardwarePage() {
   const [utilPct, setUtilPct] = useState(80);
@@ -86,6 +87,11 @@ export default function HardwarePage() {
 
       {loading ? (
         <LoadingCard title="Loading comparison..." />
+      ) : comparison.length === 0 ? (
+        <EmptyState
+          title="No hardware data available"
+          message="GPU architecture benchmark data isn't loaded yet. Try refreshing the page."
+        />
       ) : (
         <HardwareComparisonTable
           rows={comparison}

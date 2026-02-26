@@ -128,8 +128,9 @@ export default function ManifestsPage() {
         <LoadingCard title="Loading manifests..." />
       ) : manifests.length === 0 ? (
         <EmptyState
-          title="No manifests found"
-          message="Energy manifests will appear here once jobs complete with the agent running."
+          title="No energy manifests yet"
+          message="Manifests are generated automatically when jobs complete with the agent running. Install the agent to start tracking per-job energy and cost."
+          action={{ href: '/dashboard/setup', label: 'Install the agent →' }}
         />
       ) : (
         <>

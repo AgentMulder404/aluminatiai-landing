@@ -55,7 +55,8 @@ export default function FleetPage() {
         <h1 className="text-3xl font-bold">Fleet Overview</h1>
         <EmptyState
           title="No GPU fleet data yet"
-          message="Fleet metrics will appear once your agent starts sending data."
+          message="Fleet metrics appear once your agent starts sending data. Each GPU architecture you run will show up here with utilization and efficiency stats."
+          action={{ href: '/dashboard/setup', label: 'Install the agent →' }}
         />
       </div>
     );
